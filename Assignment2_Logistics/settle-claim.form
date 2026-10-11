@@ -1,0 +1,41 @@
+{
+  "components": [
+    {
+      "type": "text",
+      "id": "Field_12",
+      "text": "### Settle claim"
+    },
+    {
+      "type": "textfield",
+      "id": "Field_09",
+      "key": "shipmentId",
+      "label": "Shipment ID",
+      "readonly": true
+    },
+    {
+      "type": "number",
+      "id": "Field_10",
+      "key": "payoutAmount",
+      "label": "Payout amount",
+      "validate": {
+        "required": true,
+        "min": 0
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "Field_11",
+      "key": "claimNotes",
+      "label": "Notes"
+    }
+  ],
+  "type": "default",
+  "id": "settle-claim",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.6.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.28.0"
+  },
+  "schemaVersion": 16
+}

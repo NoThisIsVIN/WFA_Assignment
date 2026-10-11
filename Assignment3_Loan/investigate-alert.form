@@ -1,0 +1,53 @@
+{
+  "components": [
+    {
+      "type": "text",
+      "id": "Field_16",
+      "text": "### Investigate AML alert"
+    },
+    {
+      "type": "textfield",
+      "id": "Field_13",
+      "key": "applicationId",
+      "label": "Application ID",
+      "readonly": true
+    },
+    {
+      "type": "select",
+      "id": "Field_14",
+      "key": "alertOutcome",
+      "label": "Outcome",
+      "values": [
+        {
+          "label": "False alarm",
+          "value": "CLEAR"
+        },
+        {
+          "label": "Fraud confirmed",
+          "value": "FRAUD"
+        }
+      ],
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "Field_15",
+      "key": "notes",
+      "label": "Notes",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "investigate-alert",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.6.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.28.0"
+  },
+  "schemaVersion": 16
+}

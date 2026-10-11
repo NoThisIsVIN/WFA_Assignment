@@ -1,0 +1,50 @@
+{
+  "components": [
+    {
+      "type": "text",
+      "id": "Field_25",
+      "text": "### Fix bank details"
+    },
+    {
+      "type": "textfield",
+      "id": "Field_22",
+      "key": "applicationId",
+      "label": "Application ID",
+      "readonly": true
+    },
+    {
+      "type": "textfield",
+      "id": "Field_23",
+      "key": "bankAccount",
+      "label": "Bank account number"
+    },
+    {
+      "type": "select",
+      "id": "Field_24",
+      "key": "resolution",
+      "label": "Action",
+      "values": [
+        {
+          "label": "Retry payment",
+          "value": "RETRY"
+        },
+        {
+          "label": "Cancel loan",
+          "value": "CANCEL"
+        }
+      ],
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "fix-disbursement",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.6.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.28.0"
+  },
+  "schemaVersion": 16
+}

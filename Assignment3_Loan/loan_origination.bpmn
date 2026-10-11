@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Defs_Loan" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:collaboration id="Collab_Defs_Loan">
+    <bpmn:participant id="Pool_Bank" name="Bank" processRef="loan-origination" />
+    <bpmn:participant id="Pool_Applicant" name="Applicant" />
+    <bpmn:participant id="Pool_Bureau" name="Credit Bureau" />
+    <bpmn:messageFlow id="Msg_Pool_Applicant_S_App" name="Application" sourceRef="Pool_Applicant" targetRef="S_App" />
+    <bpmn:messageFlow id="Msg_T_ReqDocs_Pool_Applicant" name="Docs request" sourceRef="T_ReqDocs" targetRef="Pool_Applicant" />
+    <bpmn:messageFlow id="Msg_Pool_Applicant_T_RecvDocs" name="Documents" sourceRef="Pool_Applicant" targetRef="T_RecvDocs" />
+    <bpmn:messageFlow id="Msg_T_Score_Pool_Bureau" name="Request" sourceRef="T_Score" targetRef="Pool_Bureau" />
+    <bpmn:messageFlow id="Msg_Pool_Bureau_T_Score" name="Credit score" sourceRef="Pool_Bureau" targetRef="T_Score" />
+    <bpmn:messageFlow id="Msg_T_Reject_Pool_Applicant" name="Rejection" sourceRef="T_Reject" targetRef="Pool_Applicant" />
+    <bpmn:messageFlow id="Msg_T_Offer_Pool_Applicant" name="Offer" sourceRef="T_Offer" targetRef="Pool_Applicant" />
+    <bpmn:messageFlow id="Msg_Pool_Applicant_C_Signed" name="Signed" sourceRef="Pool_Applicant" targetRef="C_Signed" />
+    <bpmn:messageFlow id="Msg_Pool_Applicant_C_Declined" name="Declined" sourceRef="Pool_Applicant" targetRef="C_Declined" />
+    <bpmn:messageFlow id="Msg_T_Confirm_Pool_Applicant" name="Confirmation" sourceRef="T_Confirm" targetRef="Pool_Applicant" />
+    <bpmn:messageFlow id="Msg_Pool_Applicant_W_S" name="Withdraw" sourceRef="Pool_Applicant" targetRef="W_S" />
+    <bpmn:messageFlow id="Msg_W_Confirm_Pool_Applicant" name="Confirmed" sourceRef="W_Confirm" targetRef="Pool_Applicant" />
+  </bpmn:collaboration>
+  <bpmn:process id="loan-origination" name="Bank" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_loan-origination">
+      <bpmn:lane id="Lane_LoanOfficer" name="Loan Officer">
+        <bpmn:flowNodeRef>S_App</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>M_Docs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_ReqDocs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_RecvDocs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_Docs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Lapsed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>M_Reject</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Reject</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Rejected</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Offer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EG_Offer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>C_Signed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>C_Declined</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Declined</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>C_Expired</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Expired</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Confirm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Disbursed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ES_Withdraw</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_CoreBanking" name="Core Banking System">
+        <bpmn:flowNodeRef>T_Elig</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Elig</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Split</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Score</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_Bureau</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_AltBureau</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_KYC</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Join</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Checks</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_FraudCompliance" name="Fraud &amp; Compliance">
+        <bpmn:flowNodeRef>T_AML</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Investigate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Fraud</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Fraud</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Underwriter" name="Underwriter / Credit Committee">
+        <bpmn:flowNodeRef>M_UW</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Underwrite</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_UW</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Operations" name="Operations / Disbursement">
+        <bpmn:flowNodeRef>M_Disb</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Disburse</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_Disb</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Fix</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Retry</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_DisbCancelled</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="S_App" name="Application received">
+      <bpmn:outgoing>Flow_S_App_M_Docs</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="EvDef_1" messageRef="Message_1" />
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="M_Docs">
+      <bpmn:incoming>Flow_S_App_M_Docs</bpmn:incoming>
+      <bpmn:incoming>Flow_T_RecvDocs_M_Docs</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_Docs_T_Elig</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:businessRuleTask id="T_Elig" name="Check eligibility">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="loan-eligibility" resultVariable="eligibility" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_M_Docs_T_Elig</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Elig_G_Elig</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="G_Elig" name="Eligible?" default="Flow_G_Elig_M_Reject">
+      <bpmn:incoming>Flow_T_Elig_G_Elig</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Elig_T_ReqDocs</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Elig_G_Split</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Elig_M_Reject</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="T_ReqDocs" name="Request documents">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="request-documents" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Elig_T_ReqDocs</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_ReqDocs_T_RecvDocs</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:receiveTask id="T_RecvDocs" name="Receive documents" messageRef="Message_2">
+      <bpmn:incoming>Flow_T_ReqDocs_T_RecvDocs</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_RecvDocs_M_Docs</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:boundaryEvent id="B_Docs" name="7 days" attachedToRef="T_RecvDocs">
+      <bpmn:outgoing>Flow_B_Docs_E_Lapsed</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="EvDef_2">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="E_Lapsed" name="Application lapsed">
+      <bpmn:incoming>Flow_B_Docs_E_Lapsed</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:parallelGateway id="G_Split">
+      <bpmn:incoming>Flow_G_Elig_G_Split</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Split_T_Score</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Split_T_KYC</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Split_T_AML</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="T_Score" name="Get credit score">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="credit-bureau" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Split_T_Score</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Score_G_Join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="B_Bureau" name="Bureau down" attachedToRef="T_Score">
+      <bpmn:outgoing>Flow_B_Bureau_T_AltBureau</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="EvDef_3" errorRef="Error_1" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="T_AltBureau" name="Use backup bureau">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="backup-bureau" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_B_Bureau_T_AltBureau</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_AltBureau_G_Join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="T_KYC" name="Verify identity (KYC)">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="kyc-check" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Split_T_KYC</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_KYC_G_Join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="T_AML" name="AML screening">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="aml-screening" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Split_T_AML</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_AML_G_Join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:parallelGateway id="G_Join">
+      <bpmn:incoming>Flow_T_Score_G_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_T_AltBureau_G_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_T_KYC_G_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_T_AML_G_Join</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Join_G_Checks</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="G_Checks" name="Checks passed?" default="Flow_G_Checks_M_UW">
+      <bpmn:incoming>Flow_G_Join_G_Checks</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Checks_T_Investigate</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Checks_M_UW</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Checks_M_Reject</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="T_Investigate" name="Investigate alert">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="investigate-alert" />
+        <zeebe:assignmentDefinition candidateGroups="compliance" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Checks_T_Investigate</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Investigate_G_Fraud</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="G_Fraud" name="Fraud?" default="Flow_G_Fraud_M_UW">
+      <bpmn:incoming>Flow_T_Investigate_G_Fraud</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Fraud_E_Fraud</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Fraud_M_UW</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="E_Fraud" name="Rejected - fraud">
+      <bpmn:incoming>Flow_G_Fraud_E_Fraud</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="EvDef_4" />
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="M_UW">
+      <bpmn:incoming>Flow_G_Checks_M_UW</bpmn:incoming>
+      <bpmn:incoming>Flow_G_Fraud_M_UW</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_UW_T_Underwrite</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="T_Underwrite" name="Underwrite application">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="underwrite-application" />
+        <zeebe:assignmentDefinition candidateGroups="underwriters" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_M_UW_T_Underwrite</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Underwrite_G_UW</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="G_UW" name="Approved?" default="Flow_G_UW_M_Reject">
+      <bpmn:incoming>Flow_T_Underwrite_G_UW</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_UW_M_Reject</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_UW_T_Offer</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="M_Reject">
+      <bpmn:incoming>Flow_G_Elig_M_Reject</bpmn:incoming>
+      <bpmn:incoming>Flow_G_Checks_M_Reject</bpmn:incoming>
+      <bpmn:incoming>Flow_G_UW_M_Reject</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_Reject_T_Reject</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="T_Reject" name="Send rejection">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-rejection" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_M_Reject_T_Reject</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Reject_E_Rejected</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="E_Rejected" name="Application rejected">
+      <bpmn:incoming>Flow_T_Reject_E_Rejected</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sendTask id="T_Offer" name="Send offer">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-offer" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_UW_T_Offer</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Offer_EG_Offer</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:eventBasedGateway id="EG_Offer">
+      <bpmn:incoming>Flow_T_Offer_EG_Offer</bpmn:incoming>
+      <bpmn:outgoing>Flow_EG_Offer_C_Signed</bpmn:outgoing>
+      <bpmn:outgoing>Flow_EG_Offer_C_Declined</bpmn:outgoing>
+      <bpmn:outgoing>Flow_EG_Offer_C_Expired</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="C_Signed" name="Signed agreement received">
+      <bpmn:incoming>Flow_EG_Offer_C_Signed</bpmn:incoming>
+      <bpmn:outgoing>Flow_C_Signed_M_Disb</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="EvDef_5" messageRef="Message_3" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="C_Declined" name="Offer declined">
+      <bpmn:incoming>Flow_EG_Offer_C_Declined</bpmn:incoming>
+      <bpmn:outgoing>Flow_C_Declined_E_Declined</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="EvDef_6" messageRef="Message_4" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="E_Declined" name="Offer declined">
+      <bpmn:incoming>Flow_C_Declined_E_Declined</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="C_Expired" name="15 days">
+      <bpmn:incoming>Flow_EG_Offer_C_Expired</bpmn:incoming>
+      <bpmn:outgoing>Flow_C_Expired_E_Expired</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="EvDef_7">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P15D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="E_Expired" name="Offer expired">
+      <bpmn:incoming>Flow_C_Expired_E_Expired</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="M_Disb">
+      <bpmn:incoming>Flow_C_Signed_M_Disb</bpmn:incoming>
+      <bpmn:incoming>Flow_G_Retry_M_Disb</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_Disb_T_Disburse</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="T_Disburse" name="Disburse funds">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="disburse-funds" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_M_Disb_T_Disburse</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Disburse_T_Confirm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="B_Disb" name="Payment failed" attachedToRef="T_Disburse">
+      <bpmn:outgoing>Flow_B_Disb_T_Fix</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="EvDef_8" errorRef="Error_2" />
+    </bpmn:boundaryEvent>
+    <bpmn:userTask id="T_Fix" name="Fix bank details">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="fix-disbursement" />
+        <zeebe:assignmentDefinition candidateGroups="operations" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_B_Disb_T_Fix</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Fix_G_Retry</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="G_Retry" name="Retry?" default="Flow_G_Retry_E_DisbCancelled">
+      <bpmn:incoming>Flow_T_Fix_G_Retry</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Retry_M_Disb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Retry_E_DisbCancelled</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="E_DisbCancelled" name="Loan cancelled">
+      <bpmn:incoming>Flow_G_Retry_E_DisbCancelled</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sendTask id="T_Confirm" name="Send confirmation">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-confirmation" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_T_Disburse_T_Confirm</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Confirm_E_Disbursed</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="E_Disbursed" name="Loan disbursed">
+      <bpmn:incoming>Flow_T_Confirm_E_Disbursed</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="ES_Withdraw" name="Applicant withdraws" triggeredByEvent="true">
+      <bpmn:startEvent id="W_S" name="Withdrawal request">
+        <bpmn:outgoing>Flow_W_S_W_Confirm</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="EvDef_9" messageRef="Message_5" />
+      </bpmn:startEvent>
+      <bpmn:sendTask id="W_Confirm" name="Confirm withdrawal">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="confirm-withdrawal" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_W_S_W_Confirm</bpmn:incoming>
+        <bpmn:outgoing>Flow_W_Confirm_W_E</bpmn:outgoing>
+      </bpmn:sendTask>
+      <bpmn:endEvent id="W_E" name="Withdrawn">
+        <bpmn:incoming>Flow_W_Confirm_W_E</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_W_S_W_Confirm" sourceRef="W_S" targetRef="W_Confirm" />
+      <bpmn:sequenceFlow id="Flow_W_Confirm_W_E" sourceRef="W_Confirm" targetRef="W_E" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_S_App_M_Docs" sourceRef="S_App" targetRef="M_Docs" />
+    <bpmn:sequenceFlow id="Flow_M_Docs_T_Elig" sourceRef="M_Docs" targetRef="T_Elig" />
+    <bpmn:sequenceFlow id="Flow_T_Elig_G_Elig" sourceRef="T_Elig" targetRef="G_Elig" />
+    <bpmn:sequenceFlow id="Flow_G_Elig_T_ReqDocs" name="Docs missing" sourceRef="G_Elig" targetRef="T_ReqDocs">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=eligibility = "INCOMPLETE"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_T_ReqDocs_T_RecvDocs" sourceRef="T_ReqDocs" targetRef="T_RecvDocs" />
+    <bpmn:sequenceFlow id="Flow_T_RecvDocs_M_Docs" sourceRef="T_RecvDocs" targetRef="M_Docs" />
+    <bpmn:sequenceFlow id="Flow_B_Docs_E_Lapsed" sourceRef="B_Docs" targetRef="E_Lapsed" />
+    <bpmn:sequenceFlow id="Flow_G_Elig_G_Split" name="Yes" sourceRef="G_Elig" targetRef="G_Split">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=eligibility = "OK"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Split_T_Score" sourceRef="G_Split" targetRef="T_Score" />
+    <bpmn:sequenceFlow id="Flow_G_Split_T_KYC" sourceRef="G_Split" targetRef="T_KYC" />
+    <bpmn:sequenceFlow id="Flow_G_Split_T_AML" sourceRef="G_Split" targetRef="T_AML" />
+    <bpmn:sequenceFlow id="Flow_T_Score_G_Join" sourceRef="T_Score" targetRef="G_Join" />
+    <bpmn:sequenceFlow id="Flow_B_Bureau_T_AltBureau" sourceRef="B_Bureau" targetRef="T_AltBureau" />
+    <bpmn:sequenceFlow id="Flow_T_AltBureau_G_Join" sourceRef="T_AltBureau" targetRef="G_Join" />
+    <bpmn:sequenceFlow id="Flow_T_KYC_G_Join" sourceRef="T_KYC" targetRef="G_Join" />
+    <bpmn:sequenceFlow id="Flow_T_AML_G_Join" sourceRef="T_AML" targetRef="G_Join" />
+    <bpmn:sequenceFlow id="Flow_G_Join_G_Checks" sourceRef="G_Join" targetRef="G_Checks" />
+    <bpmn:sequenceFlow id="Flow_G_Checks_T_Investigate" name="AML alert" sourceRef="G_Checks" targetRef="T_Investigate">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=amlHit = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Checks_M_UW" name="All clear" sourceRef="G_Checks" targetRef="M_UW" />
+    <bpmn:sequenceFlow id="Flow_T_Investigate_G_Fraud" sourceRef="T_Investigate" targetRef="G_Fraud" />
+    <bpmn:sequenceFlow id="Flow_G_Fraud_E_Fraud" name="Yes" sourceRef="G_Fraud" targetRef="E_Fraud">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=alertOutcome = "FRAUD"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Fraud_M_UW" name="No" sourceRef="G_Fraud" targetRef="M_UW" />
+    <bpmn:sequenceFlow id="Flow_M_UW_T_Underwrite" sourceRef="M_UW" targetRef="T_Underwrite" />
+    <bpmn:sequenceFlow id="Flow_T_Underwrite_G_UW" sourceRef="T_Underwrite" targetRef="G_UW" />
+    <bpmn:sequenceFlow id="Flow_G_Elig_M_Reject" name="Ineligible" sourceRef="G_Elig" targetRef="M_Reject" />
+    <bpmn:sequenceFlow id="Flow_G_Checks_M_Reject" name="KYC failed" sourceRef="G_Checks" targetRef="M_Reject">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kycPassed = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_UW_M_Reject" name="No" sourceRef="G_UW" targetRef="M_Reject" />
+    <bpmn:sequenceFlow id="Flow_M_Reject_T_Reject" sourceRef="M_Reject" targetRef="T_Reject" />
+    <bpmn:sequenceFlow id="Flow_T_Reject_E_Rejected" sourceRef="T_Reject" targetRef="E_Rejected" />
+    <bpmn:sequenceFlow id="Flow_G_UW_T_Offer" name="Yes" sourceRef="G_UW" targetRef="T_Offer">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=underwritingDecision = "APPROVE"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_T_Offer_EG_Offer" sourceRef="T_Offer" targetRef="EG_Offer" />
+    <bpmn:sequenceFlow id="Flow_EG_Offer_C_Signed" sourceRef="EG_Offer" targetRef="C_Signed" />
+    <bpmn:sequenceFlow id="Flow_EG_Offer_C_Declined" sourceRef="EG_Offer" targetRef="C_Declined" />
+    <bpmn:sequenceFlow id="Flow_C_Declined_E_Declined" sourceRef="C_Declined" targetRef="E_Declined" />
+    <bpmn:sequenceFlow id="Flow_EG_Offer_C_Expired" sourceRef="EG_Offer" targetRef="C_Expired" />
+    <bpmn:sequenceFlow id="Flow_C_Expired_E_Expired" sourceRef="C_Expired" targetRef="E_Expired" />
+    <bpmn:sequenceFlow id="Flow_C_Signed_M_Disb" sourceRef="C_Signed" targetRef="M_Disb" />
+    <bpmn:sequenceFlow id="Flow_M_Disb_T_Disburse" sourceRef="M_Disb" targetRef="T_Disburse" />
+    <bpmn:sequenceFlow id="Flow_T_Disburse_T_Confirm" sourceRef="T_Disburse" targetRef="T_Confirm" />
+    <bpmn:sequenceFlow id="Flow_T_Confirm_E_Disbursed" sourceRef="T_Confirm" targetRef="E_Disbursed" />
+    <bpmn:sequenceFlow id="Flow_B_Disb_T_Fix" sourceRef="B_Disb" targetRef="T_Fix" />
+    <bpmn:sequenceFlow id="Flow_T_Fix_G_Retry" sourceRef="T_Fix" targetRef="G_Retry" />
+    <bpmn:sequenceFlow id="Flow_G_Retry_M_Disb" name="Yes" sourceRef="G_Retry" targetRef="M_Disb">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=resolution = "RETRY"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Retry_E_DisbCancelled" name="No" sourceRef="G_Retry" targetRef="E_DisbCancelled" />
+  </bpmn:process>
+  <bpmn:message id="Message_1" name="Loan application" />
+  <bpmn:message id="Message_2" name="Documents">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=applicationId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_3" name="Signed agreement">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=applicationId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_4" name="Offer declined">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=applicationId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_5" name="Withdrawal request">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=applicationId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:error id="Error_1" name="Bureau down" errorCode="BUREAU_DOWN" />
+  <bpmn:error id="Error_2" name="Payment failed" errorCode="PAYMENT_FAILED" />
+  <bpmndi:BPMNDiagram id="Diagram_Collab_Defs_Loan">
+    <bpmndi:BPMNPlane id="Plane_Collab_Defs_Loan" bpmnElement="Collab_Defs_Loan">
+      <bpmndi:BPMNShape id="Pool_Bank_di" bpmnElement="Pool_Bank" isHorizontal="true">
+        <dc:Bounds x="0" y="130" width="3500" height="1600" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_LoanOfficer_di" bpmnElement="Lane_LoanOfficer" isHorizontal="true">
+        <dc:Bounds x="30" y="130" width="3470" height="480" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_CoreBanking_di" bpmnElement="Lane_CoreBanking" isHorizontal="true">
+        <dc:Bounds x="30" y="610" width="3470" height="480" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_FraudCompliance_di" bpmnElement="Lane_FraudCompliance" isHorizontal="true">
+        <dc:Bounds x="30" y="1090" width="3470" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Underwriter_di" bpmnElement="Lane_Underwriter" isHorizontal="true">
+        <dc:Bounds x="30" y="1250" width="3470" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Operations_di" bpmnElement="Lane_Operations" isHorizontal="true">
+        <dc:Bounds x="30" y="1410" width="3470" height="320" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Pool_Applicant_di" bpmnElement="Pool_Applicant" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="3500" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Pool_Bureau_di" bpmnElement="Pool_Bureau" isHorizontal="true">
+        <dc:Bounds x="0" y="1790" width="3500" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ES_Withdraw_di" bpmnElement="ES_Withdraw" isExpanded="true">
+        <dc:Bounds x="1150" y="140" width="520" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_App_di" bpmnElement="S_App">
+        <dc:Bounds x="132" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="102" y="392" width="96" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_Docs_di" bpmnElement="M_Docs">
+        <dc:Bounds x="305" y="345" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Elig_di" bpmnElement="T_Elig">
+        <dc:Bounds x="460" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Elig_di" bpmnElement="G_Elig">
+        <dc:Bounds x="665" y="665" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="640" y="719" width="100" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_ReqDocs_di" bpmnElement="T_ReqDocs">
+        <dc:Bounds x="640" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_RecvDocs_di" bpmnElement="T_RecvDocs">
+        <dc:Bounds x="820" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_Docs_di" bpmnElement="B_Docs">
+        <dc:Bounds x="852" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="878" y="270" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Lapsed_di" bpmnElement="E_Lapsed">
+        <dc:Bounds x="1032" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1002" y="392" width="96" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Split_di" bpmnElement="G_Split">
+        <dc:Bounds x="845" y="665" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Score_di" bpmnElement="T_Score">
+        <dc:Bounds x="1000" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_Bureau_di" bpmnElement="B_Bureau">
+        <dc:Bounds x="1002" y="712" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="916" y="750" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_AltBureau_di" bpmnElement="T_AltBureau">
+        <dc:Bounds x="1000" y="810" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_KYC_di" bpmnElement="T_KYC">
+        <dc:Bounds x="1180" y="970" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_AML_di" bpmnElement="T_AML">
+        <dc:Bounds x="1180" y="1130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Join_di" bpmnElement="G_Join">
+        <dc:Bounds x="1385" y="665" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Checks_di" bpmnElement="G_Checks">
+        <dc:Bounds x="1565" y="665" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1469" y="653" width="100" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Investigate_di" bpmnElement="T_Investigate">
+        <dc:Bounds x="1540" y="1130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Fraud_di" bpmnElement="G_Fraud">
+        <dc:Bounds x="1745" y="1145" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1720" y="1127" width="100" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Fraud_di" bpmnElement="E_Fraud">
+        <dc:Bounds x="1932" y="1152" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1902" y="1192" width="96" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_UW_di" bpmnElement="M_UW">
+        <dc:Bounds x="1745" y="1305" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Underwrite_di" bpmnElement="T_Underwrite">
+        <dc:Bounds x="1900" y="1290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_UW_di" bpmnElement="G_UW">
+        <dc:Bounds x="2105" y="1305" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2080" y="1359" width="100" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_Reject_di" bpmnElement="M_Reject">
+        <dc:Bounds x="1745" y="505" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Reject_di" bpmnElement="T_Reject">
+        <dc:Bounds x="1900" y="490" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Rejected_di" bpmnElement="E_Rejected">
+        <dc:Bounds x="2112" y="512" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2082" y="552" width="96" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Offer_di" bpmnElement="T_Offer">
+        <dc:Bounds x="2260" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EG_Offer_di" bpmnElement="EG_Offer">
+        <dc:Bounds x="2465" y="345" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="C_Signed_di" bpmnElement="C_Signed">
+        <dc:Bounds x="2652" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2622" y="392" width="96" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="C_Declined_di" bpmnElement="C_Declined">
+        <dc:Bounds x="2832" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2802" y="232" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Declined_di" bpmnElement="E_Declined">
+        <dc:Bounds x="3012" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2982" y="232" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="C_Expired_di" bpmnElement="C_Expired">
+        <dc:Bounds x="2652" y="512" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2622" y="552" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Expired_di" bpmnElement="E_Expired">
+        <dc:Bounds x="2832" y="512" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2802" y="552" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_Disb_di" bpmnElement="M_Disb">
+        <dc:Bounds x="2825" y="1465" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Disburse_di" bpmnElement="T_Disburse">
+        <dc:Bounds x="2980" y="1450" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_Disb_di" bpmnElement="B_Disb">
+        <dc:Bounds x="3012" y="1512" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="3038" y="1550" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Fix_di" bpmnElement="T_Fix">
+        <dc:Bounds x="2980" y="1610" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Retry_di" bpmnElement="G_Retry">
+        <dc:Bounds x="3185" y="1625" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="3160" y="1679" width="100" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_DisbCancelled_di" bpmnElement="E_DisbCancelled">
+        <dc:Bounds x="3372" y="1632" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="3342" y="1672" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Confirm_di" bpmnElement="T_Confirm">
+        <dc:Bounds x="3160" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Disbursed_di" bpmnElement="E_Disbursed">
+        <dc:Bounds x="3372" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="3342" y="392" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="W_S_di" bpmnElement="W_S">
+        <dc:Bounds x="1212" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1182" y="232" width="96" height="28" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="W_Confirm_di" bpmnElement="W_Confirm">
+        <dc:Bounds x="1360" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="W_E_di" bpmnElement="W_E">
+        <dc:Bounds x="1572" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1542" y="232" width="96" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_S_App_M_Docs_di" bpmnElement="Flow_S_App_M_Docs">
+        <di:waypoint x="168" y="370" />
+        <di:waypoint x="305" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_Docs_T_Elig_di" bpmnElement="Flow_M_Docs_T_Elig">
+        <di:waypoint x="330" y="395" />
+        <di:waypoint x="330" y="690" />
+        <di:waypoint x="460" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Elig_G_Elig_di" bpmnElement="Flow_T_Elig_G_Elig">
+        <di:waypoint x="560" y="690" />
+        <di:waypoint x="665" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Elig_T_ReqDocs_di" bpmnElement="Flow_G_Elig_T_ReqDocs">
+        <di:waypoint x="690" y="665" />
+        <di:waypoint x="690" y="250" />
+        <bpmndi:BPMNLabel><dc:Bounds x="695" y="647" width="74" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_ReqDocs_T_RecvDocs_di" bpmnElement="Flow_T_ReqDocs_T_RecvDocs">
+        <di:waypoint x="740" y="210" />
+        <di:waypoint x="820" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_RecvDocs_M_Docs_di" bpmnElement="Flow_T_RecvDocs_M_Docs">
+        <di:waypoint x="870" y="170" />
+        <di:waypoint x="870" y="150" />
+        <di:waypoint x="330" y="150" />
+        <di:waypoint x="330" y="345" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B_Docs_E_Lapsed_di" bpmnElement="Flow_B_Docs_E_Lapsed">
+        <di:waypoint x="870" y="268" />
+        <di:waypoint x="870" y="370" />
+        <di:waypoint x="1032" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Elig_G_Split_di" bpmnElement="Flow_G_Elig_G_Split">
+        <di:waypoint x="715" y="690" />
+        <di:waypoint x="845" y="690" />
+        <bpmndi:BPMNLabel><dc:Bounds x="721" y="673" width="30" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Split_T_Score_di" bpmnElement="Flow_G_Split_T_Score">
+        <di:waypoint x="895" y="690" />
+        <di:waypoint x="1000" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Split_T_KYC_di" bpmnElement="Flow_G_Split_T_KYC">
+        <di:waypoint x="870" y="715" />
+        <di:waypoint x="870" y="1010" />
+        <di:waypoint x="1180" y="1010" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Split_T_AML_di" bpmnElement="Flow_G_Split_T_AML">
+        <di:waypoint x="870" y="715" />
+        <di:waypoint x="870" y="740" />
+        <di:waypoint x="980" y="740" />
+        <di:waypoint x="980" y="1170" />
+        <di:waypoint x="1180" y="1170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Score_G_Join_di" bpmnElement="Flow_T_Score_G_Join">
+        <di:waypoint x="1100" y="690" />
+        <di:waypoint x="1385" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B_Bureau_T_AltBureau_di" bpmnElement="Flow_B_Bureau_T_AltBureau">
+        <di:waypoint x="1020" y="748" />
+        <di:waypoint x="1020" y="790" />
+        <di:waypoint x="1050" y="790" />
+        <di:waypoint x="1050" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_AltBureau_G_Join_di" bpmnElement="Flow_T_AltBureau_G_Join">
+        <di:waypoint x="1100" y="850" />
+        <di:waypoint x="1410" y="850" />
+        <di:waypoint x="1410" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_KYC_G_Join_di" bpmnElement="Flow_T_KYC_G_Join">
+        <di:waypoint x="1280" y="1010" />
+        <di:waypoint x="1390" y="1010" />
+        <di:waypoint x="1390" y="740" />
+        <di:waypoint x="1410" y="740" />
+        <di:waypoint x="1410" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_AML_G_Join_di" bpmnElement="Flow_T_AML_G_Join">
+        <di:waypoint x="1280" y="1170" />
+        <di:waypoint x="1430" y="1170" />
+        <di:waypoint x="1430" y="740" />
+        <di:waypoint x="1410" y="740" />
+        <di:waypoint x="1410" y="715" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Join_G_Checks_di" bpmnElement="Flow_G_Join_G_Checks">
+        <di:waypoint x="1435" y="690" />
+        <di:waypoint x="1565" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Checks_T_Investigate_di" bpmnElement="Flow_G_Checks_T_Investigate">
+        <di:waypoint x="1590" y="715" />
+        <di:waypoint x="1590" y="1130" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1595" y="719" width="56" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Checks_M_UW_di" bpmnElement="Flow_G_Checks_M_UW">
+        <di:waypoint x="1615" y="690" />
+        <di:waypoint x="1720" y="690" />
+        <di:waypoint x="1720" y="1280" />
+        <di:waypoint x="1770" y="1280" />
+        <di:waypoint x="1770" y="1305" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1621" y="673" width="56" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Investigate_G_Fraud_di" bpmnElement="Flow_T_Investigate_G_Fraud">
+        <di:waypoint x="1640" y="1170" />
+        <di:waypoint x="1745" y="1170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Fraud_E_Fraud_di" bpmnElement="Flow_G_Fraud_E_Fraud">
+        <di:waypoint x="1795" y="1170" />
+        <di:waypoint x="1932" y="1170" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1801" y="1153" width="30" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Fraud_M_UW_di" bpmnElement="Flow_G_Fraud_M_UW">
+        <di:waypoint x="1770" y="1195" />
+        <di:waypoint x="1770" y="1260" />
+        <di:waypoint x="1700" y="1260" />
+        <di:waypoint x="1700" y="1330" />
+        <di:waypoint x="1745" y="1330" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1775" y="1199" width="30" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_UW_T_Underwrite_di" bpmnElement="Flow_M_UW_T_Underwrite">
+        <di:waypoint x="1795" y="1330" />
+        <di:waypoint x="1900" y="1330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Underwrite_G_UW_di" bpmnElement="Flow_T_Underwrite_G_UW">
+        <di:waypoint x="2000" y="1330" />
+        <di:waypoint x="2105" y="1330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Elig_M_Reject_di" bpmnElement="Flow_G_Elig_M_Reject">
+        <di:waypoint x="690" y="665" />
+        <di:waypoint x="690" y="640" />
+        <di:waypoint x="980" y="640" />
+        <di:waypoint x="980" y="530" />
+        <di:waypoint x="1745" y="530" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1673" y="513" width="62" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Checks_M_Reject_di" bpmnElement="Flow_G_Checks_M_Reject">
+        <di:waypoint x="1590" y="665" />
+        <di:waypoint x="1590" y="580" />
+        <di:waypoint x="1770" y="580" />
+        <di:waypoint x="1770" y="555" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1595" y="647" width="62" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_UW_M_Reject_di" bpmnElement="Flow_G_UW_M_Reject">
+        <di:waypoint x="2130" y="1305" />
+        <di:waypoint x="2130" y="600" />
+        <di:waypoint x="1770" y="600" />
+        <di:waypoint x="1770" y="555" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2135" y="1287" width="30" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_Reject_T_Reject_di" bpmnElement="Flow_M_Reject_T_Reject">
+        <di:waypoint x="1795" y="530" />
+        <di:waypoint x="1900" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Reject_E_Rejected_di" bpmnElement="Flow_T_Reject_E_Rejected">
+        <di:waypoint x="2000" y="530" />
+        <di:waypoint x="2112" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_UW_T_Offer_di" bpmnElement="Flow_G_UW_T_Offer">
+        <di:waypoint x="2155" y="1330" />
+        <di:waypoint x="2310" y="1330" />
+        <di:waypoint x="2310" y="410" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2161" y="1313" width="30" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Offer_EG_Offer_di" bpmnElement="Flow_T_Offer_EG_Offer">
+        <di:waypoint x="2360" y="370" />
+        <di:waypoint x="2465" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_EG_Offer_C_Signed_di" bpmnElement="Flow_EG_Offer_C_Signed">
+        <di:waypoint x="2515" y="370" />
+        <di:waypoint x="2652" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_EG_Offer_C_Declined_di" bpmnElement="Flow_EG_Offer_C_Declined">
+        <di:waypoint x="2490" y="345" />
+        <di:waypoint x="2490" y="210" />
+        <di:waypoint x="2832" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C_Declined_E_Declined_di" bpmnElement="Flow_C_Declined_E_Declined">
+        <di:waypoint x="2868" y="210" />
+        <di:waypoint x="3012" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_EG_Offer_C_Expired_di" bpmnElement="Flow_EG_Offer_C_Expired">
+        <di:waypoint x="2490" y="395" />
+        <di:waypoint x="2490" y="530" />
+        <di:waypoint x="2652" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C_Expired_E_Expired_di" bpmnElement="Flow_C_Expired_E_Expired">
+        <di:waypoint x="2688" y="530" />
+        <di:waypoint x="2832" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C_Signed_M_Disb_di" bpmnElement="Flow_C_Signed_M_Disb">
+        <di:waypoint x="2688" y="370" />
+        <di:waypoint x="2810" y="370" />
+        <di:waypoint x="2810" y="1440" />
+        <di:waypoint x="2850" y="1440" />
+        <di:waypoint x="2850" y="1465" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_Disb_T_Disburse_di" bpmnElement="Flow_M_Disb_T_Disburse">
+        <di:waypoint x="2875" y="1490" />
+        <di:waypoint x="2980" y="1490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Disburse_T_Confirm_di" bpmnElement="Flow_T_Disburse_T_Confirm">
+        <di:waypoint x="3080" y="1490" />
+        <di:waypoint x="3210" y="1490" />
+        <di:waypoint x="3210" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Confirm_E_Disbursed_di" bpmnElement="Flow_T_Confirm_E_Disbursed">
+        <di:waypoint x="3260" y="370" />
+        <di:waypoint x="3372" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B_Disb_T_Fix_di" bpmnElement="Flow_B_Disb_T_Fix">
+        <di:waypoint x="3030" y="1548" />
+        <di:waypoint x="3030" y="1610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Fix_G_Retry_di" bpmnElement="Flow_T_Fix_G_Retry">
+        <di:waypoint x="3080" y="1650" />
+        <di:waypoint x="3185" y="1650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Retry_M_Disb_di" bpmnElement="Flow_G_Retry_M_Disb">
+        <di:waypoint x="3210" y="1625" />
+        <di:waypoint x="3210" y="1570" />
+        <di:waypoint x="2850" y="1570" />
+        <di:waypoint x="2850" y="1515" />
+        <bpmndi:BPMNLabel><dc:Bounds x="3215" y="1607" width="30" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Retry_E_DisbCancelled_di" bpmnElement="Flow_G_Retry_E_DisbCancelled">
+        <di:waypoint x="3235" y="1650" />
+        <di:waypoint x="3372" y="1650" />
+        <bpmndi:BPMNLabel><dc:Bounds x="3241" y="1633" width="30" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_W_S_W_Confirm_di" bpmnElement="Flow_W_S_W_Confirm">
+        <di:waypoint x="1248" y="210" />
+        <di:waypoint x="1360" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_W_Confirm_W_E_di" bpmnElement="Flow_W_Confirm_W_E">
+        <di:waypoint x="1460" y="210" />
+        <di:waypoint x="1572" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_Pool_Applicant_S_App_di" bpmnElement="Msg_Pool_Applicant_S_App">
+        <di:waypoint x="150" y="70" />
+        <di:waypoint x="150" y="352" />
+        <bpmndi:BPMNLabel><dc:Bounds x="76" y="204" width="68" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_ReqDocs_Pool_Applicant_di" bpmnElement="Msg_T_ReqDocs_Pool_Applicant">
+        <di:waypoint x="690" y="170" />
+        <di:waypoint x="690" y="70" />
+        <bpmndi:BPMNLabel><dc:Bounds x="696" y="113" width="74" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_Pool_Applicant_T_RecvDocs_di" bpmnElement="Msg_Pool_Applicant_T_RecvDocs">
+        <di:waypoint x="890" y="70" />
+        <di:waypoint x="890" y="150" />
+        <di:waypoint x="895" y="170" />
+        <bpmndi:BPMNLabel><dc:Bounds x="828" y="103" width="56" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_Score_Pool_Bureau_di" bpmnElement="Msg_T_Score_Pool_Bureau">
+        <di:waypoint x="1090" y="730" />
+        <di:waypoint x="1090" y="790" />
+        <di:waypoint x="1120" y="790" />
+        <di:waypoint x="1120" y="1790" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1071" y="1283" width="43" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_Pool_Bureau_T_Score_di" bpmnElement="Msg_Pool_Bureau_T_Score">
+        <di:waypoint x="1140" y="1790" />
+        <di:waypoint x="1140" y="750" />
+        <di:waypoint x="1090" y="750" />
+        <di:waypoint x="1090" y="730" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1146" y="1263" width="74" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_Reject_Pool_Applicant_di" bpmnElement="Msg_T_Reject_Pool_Applicant">
+        <di:waypoint x="1950" y="490" />
+        <di:waypoint x="1950" y="70" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1956" y="273" width="56" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_Offer_Pool_Applicant_di" bpmnElement="Msg_T_Offer_Pool_Applicant">
+        <di:waypoint x="2310" y="330" />
+        <di:waypoint x="2310" y="70" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2316" y="193" width="31" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_Pool_Applicant_C_Signed_di" bpmnElement="Msg_Pool_Applicant_C_Signed">
+        <di:waypoint x="2670" y="70" />
+        <di:waypoint x="2670" y="352" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2627" y="204" width="37" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_Pool_Applicant_C_Declined_di" bpmnElement="Msg_Pool_Applicant_C_Declined">
+        <di:waypoint x="2850" y="70" />
+        <di:waypoint x="2850" y="192" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2794" y="124" width="50" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_Confirm_Pool_Applicant_di" bpmnElement="Msg_T_Confirm_Pool_Applicant">
+        <di:waypoint x="3210" y="330" />
+        <di:waypoint x="3210" y="70" />
+        <bpmndi:BPMNLabel><dc:Bounds x="3216" y="193" width="74" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_Pool_Applicant_W_S_di" bpmnElement="Msg_Pool_Applicant_W_S">
+        <di:waypoint x="1230" y="70" />
+        <di:waypoint x="1230" y="192" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1174" y="124" width="50" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_W_Confirm_Pool_Applicant_di" bpmnElement="Msg_W_Confirm_Pool_Applicant">
+        <di:waypoint x="1410" y="170" />
+        <di:waypoint x="1410" y="70" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1416" y="113" width="56" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
