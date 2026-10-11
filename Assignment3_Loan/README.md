@@ -10,7 +10,10 @@ A bank receives a loan application, checks the applicant, decides, makes an offe
 | `investigate-alert.form` | Compliance: fraud or false alarm |
 | `underwrite-application.form` | Underwriter: approve or decline |
 | `fix-disbursement.form` | Operations: retry payment or cancel |
+<<<<<<< HEAD
 | `Loan_Presentation.pptx` | Presentation slides |
+=======
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
 
 ## Participants
 - **Pools (external):** Applicant, Credit Bureau

@@ -10,7 +10,10 @@ A courier picks up a parcel from a **shipper**, moves it through hubs and delive
 | `collect-parcel.form` | Pickup agent: collected or failed |
 | `attempt-delivery.form` | Delivery agent: delivered / not home / refused / damaged |
 | `settle-claim.form` | Claims: payout amount |
+<<<<<<< HEAD
 | `Logistics_Presentation.pptx` | Presentation slides |
+=======
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
 
 ## Participants
 - **Pools (external):** Shipper, Recipient

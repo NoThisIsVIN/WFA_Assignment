@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "components": [
     {
@@ -59,3 +60,66 @@
   },
   "schemaVersion": 16
 }
+=======
+{
+  "components": [
+    {
+      "type": "text",
+      "id": "Field_08",
+      "text": "### Attempt delivery"
+    },
+    {
+      "type": "textfield",
+      "id": "Field_05",
+      "key": "shipmentId",
+      "label": "Shipment ID",
+      "readonly": true
+    },
+    {
+      "type": "select",
+      "id": "Field_06",
+      "key": "deliveryOutcome",
+      "label": "Outcome",
+      "values": [
+        {
+          "label": "Delivered",
+          "value": "DELIVERED"
+        },
+        {
+          "label": "Recipient not home",
+          "value": "NOT_HOME"
+        },
+        {
+          "label": "Refused / COD not paid",
+          "value": "REFUSED"
+        },
+        {
+          "label": "Damaged",
+          "value": "DAMAGED"
+        }
+      ],
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "type": "textfield",
+      "id": "Field_07",
+      "key": "otp",
+      "label": "Delivery OTP",
+      "conditional": {
+        "hide": "=deliveryOutcome != \"DELIVERED\""
+      }
+    }
+  ],
+  "type": "default",
+  "id": "attempt-delivery",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.6.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.28.0"
+  },
+  "schemaVersion": 16
+}
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d

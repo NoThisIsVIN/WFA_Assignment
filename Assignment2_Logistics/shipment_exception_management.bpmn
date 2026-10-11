@@ -4,6 +4,7 @@
     <bpmn:participant id="Pool_Courier" name="Courier Company" processRef="shipment-process" />
     <bpmn:participant id="Pool_Shipper" name="Shipper / Customer" />
     <bpmn:participant id="Pool_Recipient" name="Recipient" />
+<<<<<<< HEAD
     <bpmn:messageFlow id="Msg_Pool_Shipper_S_Booking" name="Booking" sourceRef="Pool_Shipper" targetRef="S_Booking" />
     <bpmn:messageFlow id="Msg_T_Tracking_Pool_Shipper" name="Tracking no." sourceRef="T_Tracking" targetRef="Pool_Shipper" />
     <bpmn:messageFlow id="Msg_Pool_Shipper_B_Cancel" name="Cancel" sourceRef="Pool_Shipper" targetRef="T_Transport" />
@@ -20,10 +21,61 @@
         <bpmn:flowNodeRef>T_Tracking</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>T_Delay</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>E_Informed</bpmn:flowNodeRef>
+=======
+    <bpmn:messageFlow id="Msg_Pool_Shipper_S_Booking" name="Booking request" sourceRef="Pool_Shipper" targetRef="S_Booking" />
+    <bpmn:messageFlow id="Msg_T_Rejected_Pool_Shipper" name="Rejection reason" sourceRef="T_Rejected" targetRef="Pool_Shipper" />
+    <bpmn:messageFlow id="Msg_T_Tracking_Pool_Shipper" name="Tracking number" sourceRef="T_Tracking" targetRef="Pool_Shipper" />
+    <bpmn:messageFlow id="Msg_Pool_Shipper_B_Cancel" name="Cancel request" sourceRef="Pool_Shipper" targetRef="B_Cancel" />
+    <bpmn:messageFlow id="Msg_T_DelayNotice_Pool_Shipper" name="New ETA" sourceRef="T_DelayNotice" targetRef="Pool_Shipper" />
+    <bpmn:messageFlow id="Msg_T_NotifyRecipient_Pool_Recipient" name="Delivery ETA &#38; OTP" sourceRef="T_NotifyRecipient" targetRef="Pool_Recipient" />
+  </bpmn:collaboration>
+  <bpmn:process id="shipment-process" name="Courier Company" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_shipment-process">
+      <bpmn:lane id="Lane_DeliveryAgent" name="Delivery Agent">
+        <bpmn:flowNodeRef>T_CountDelivery</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_NotifyRecipient</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>M_Attempt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Deliver</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Outcome</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Attempts</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>C_NextDay</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Close</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Delivered</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Claims" name="Claims Department">
+        <bpmn:flowNodeRef>M_Claim</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Cover</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Covered</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Assess</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_PayClaim</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_ClaimSettled</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_ClaimDeclined</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_ClaimDeclined</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Hub" name="Hub / Warehouse">
+        <bpmn:flowNodeRef>G_Join</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>M_Transit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Inspect</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Damaged</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Intl</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Customs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>M_Customs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Trace</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Found</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>M_RTS</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Return</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Returned</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SP_Linehaul</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_NoScan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_Cancel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_Delay</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_CustomsTimeout</bpmn:flowNodeRef>
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
       </bpmn:lane>
       <bpmn:lane id="Lane_PickupAgent" name="Pickup Agent">
         <bpmn:flowNodeRef>T_Collect</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>G_Collected</bpmn:flowNodeRef>
+<<<<<<< HEAD
         <bpmn:flowNodeRef>E_PickupFailed</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>G_Split</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>T_Handover</bpmn:flowNodeRef>
@@ -188,6 +240,244 @@
       <bpmn:outgoing>Flow_G_Outcome_T_Count</bpmn:outgoing>
       <bpmn:outgoing>Flow_G_Outcome_M_RTS</bpmn:outgoing>
       <bpmn:outgoing>Flow_G_Outcome_M_Claim</bpmn:outgoing>
+=======
+        <bpmn:flowNodeRef>G_Split</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Handover</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ControlTower" name="Control Tower / Dispatcher">
+        <bpmn:flowNodeRef>S_Booking</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Validate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_Valid</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Rejected</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Rejected</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Payment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_PayFailed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Refund</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Schedule</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>M_Pickup</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_CountPickup</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>G_RetryPickup</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>X_RefundPickup</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Cancelled</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Tracking</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_DelayNotice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>E_Informed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>X_RefundCancel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_PayComp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>B_PayFailed</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="S_Booking" name="Booking received">
+      <bpmn:outgoing>Flow_S_Booking_T_Validate</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="EvDef_1" messageRef="Message_1" />
+    </bpmn:startEvent>
+    <bpmn:businessRuleTask id="T_Validate" name="Validate booking &#38; calculate charges">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="booking-validation" resultVariable="bookingResult" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_S_Booking_T_Validate</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Validate_G_Valid</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="G_Valid" name="Booking valid?" default="Flow_G_Valid_T_Rejected">
+      <bpmn:incoming>Flow_T_Validate_G_Valid</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Valid_T_Payment</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Valid_T_Rejected</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="T_Rejected" name="Notify shipper: booking rejected">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notify-shipper-booking-rejected" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Valid_T_Rejected</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Rejected_E_Rejected</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="E_Rejected" name="Booking rejected">
+      <bpmn:incoming>Flow_T_Rejected_E_Rejected</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="T_Payment" name="Collect payment">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="collect-payment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Valid_T_Payment</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Payment_T_Schedule</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="E_PayFailed" name="Payment failed">
+      <bpmn:incoming>Flow_B_PayFailed_E_PayFailed</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="T_Refund" name="Refund payment" isForCompensation="true">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="refund-payment" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="T_Schedule" name="Schedule pickup">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="schedule-pickup" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_T_Payment_T_Schedule</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Schedule_M_Pickup</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="M_Pickup">
+      <bpmn:incoming>Flow_T_Schedule_M_Pickup</bpmn:incoming>
+      <bpmn:incoming>Flow_G_RetryPickup_M_Pickup</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_Pickup_T_Collect</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="T_Collect" name="Collect parcel">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="collect-parcel" />
+        <zeebe:assignmentDefinition candidateGroups="pickup-agents" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_M_Pickup_T_Collect</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Collect_G_Collected</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="G_Collected" name="Parcel collected?" default="Flow_G_Collected_T_CountPickup">
+      <bpmn:incoming>Flow_T_Collect_G_Collected</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Collected_T_CountPickup</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Collected_G_Split</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="T_CountPickup" name="Count failed attempt">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=if pickupAttempts = null then 1 else pickupAttempts + 1" resultVariable="pickupAttempts" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Collected_T_CountPickup</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_CountPickup_G_RetryPickup</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="G_RetryPickup" name="Retry pickup?" default="Flow_G_RetryPickup_X_RefundPickup">
+      <bpmn:incoming>Flow_T_CountPickup_G_RetryPickup</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_RetryPickup_M_Pickup</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_RetryPickup_X_RefundPickup</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateThrowEvent id="X_RefundPickup" name="Refund payment">
+      <bpmn:incoming>Flow_G_RetryPickup_X_RefundPickup</bpmn:incoming>
+      <bpmn:outgoing>Flow_X_RefundPickup_E_Cancelled</bpmn:outgoing>
+      <bpmn:compensateEventDefinition id="EvDef_4" activityRef="T_Payment" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="E_Cancelled" name="Booking cancelled">
+      <bpmn:incoming>Flow_X_RefundPickup_E_Cancelled</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:parallelGateway id="G_Split">
+      <bpmn:incoming>Flow_G_Collected_G_Split</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Split_T_Handover</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Split_T_Tracking</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:manualTask id="T_Handover" name="Hand over parcel at hub">
+      <bpmn:incoming>Flow_G_Split_T_Handover</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Handover_G_Join</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:sendTask id="T_Tracking" name="Send tracking number">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-tracking-number" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Split_T_Tracking</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Tracking_G_Join</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:parallelGateway id="G_Join">
+      <bpmn:incoming>Flow_T_Handover_G_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_T_Tracking_G_Join</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Join_M_Transit</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="M_Transit">
+      <bpmn:incoming>Flow_G_Join_M_Transit</bpmn:incoming>
+      <bpmn:incoming>Flow_G_Found_M_Transit</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_Transit_T_Inspect</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="T_Inspect" name="Sort &#38; inspect parcel">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="hub-inspection" />
+        <zeebe:assignmentDefinition candidateGroups="hub-staff" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_M_Transit_T_Inspect</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Inspect_G_Damaged</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="G_Damaged" name="Contents damaged?" default="Flow_G_Damaged_SP_Linehaul">
+      <bpmn:incoming>Flow_T_Inspect_G_Damaged</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Damaged_SP_Linehaul</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Damaged_M_Claim</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="T_CountDelivery" name="Count attempt">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=if deliveryAttempts = null then 1 else deliveryAttempts + 1" resultVariable="deliveryAttempts" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Outcome_T_CountDelivery</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_CountDelivery_G_Attempts</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:subProcess id="SP_Linehaul" name="Line-haul transport">
+      <bpmn:incoming>Flow_G_Damaged_SP_Linehaul</bpmn:incoming>
+      <bpmn:outgoing>Flow_SP_Linehaul_G_Intl</bpmn:outgoing>
+      <bpmn:startEvent id="LH_S" name="Parcel ready for dispatch">
+        <bpmn:outgoing>Flow_LH_S_LH_Load</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:manualTask id="LH_Load" name="Load &#38; dispatch vehicle">
+        <bpmn:incoming>Flow_LH_S_LH_Load</bpmn:incoming>
+        <bpmn:outgoing>Flow_LH_Load_LH_Arrived</bpmn:outgoing>
+      </bpmn:manualTask>
+      <bpmn:intermediateCatchEvent id="LH_Arrived" name="Arrival scan at destination hub">
+        <bpmn:incoming>Flow_LH_Load_LH_Arrived</bpmn:incoming>
+        <bpmn:outgoing>Flow_LH_Arrived_LH_E</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="EvDef_5" messageRef="Message_2" />
+      </bpmn:intermediateCatchEvent>
+      <bpmn:endEvent id="LH_E" name="Arrived">
+        <bpmn:incoming>Flow_LH_Arrived_LH_E</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_LH_S_LH_Load" sourceRef="LH_S" targetRef="LH_Load" />
+      <bpmn:sequenceFlow id="Flow_LH_Load_LH_Arrived" sourceRef="LH_Load" targetRef="LH_Arrived" />
+      <bpmn:sequenceFlow id="Flow_LH_Arrived_LH_E" sourceRef="LH_Arrived" targetRef="LH_E" />
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="G_Intl" name="International?" default="Flow_G_Intl_M_Customs">
+      <bpmn:incoming>Flow_SP_Linehaul_G_Intl</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Intl_T_Customs</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Intl_M_Customs</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:receiveTask id="T_Customs" name="Wait for customs clearance" messageRef="Message_3">
+      <bpmn:incoming>Flow_G_Intl_T_Customs</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Customs_M_Customs</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:exclusiveGateway id="M_Customs">
+      <bpmn:incoming>Flow_G_Intl_M_Customs</bpmn:incoming>
+      <bpmn:incoming>Flow_T_Customs_M_Customs</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_Customs_T_NotifyRecipient</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="T_DelayNotice" name="Send delay notice &#38; new ETA">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-delay-notice-new-eta" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_B_Delay_T_DelayNotice</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_DelayNotice_E_Informed</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="E_Informed" name="Shipper informed">
+      <bpmn:incoming>Flow_T_DelayNotice_E_Informed</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateThrowEvent id="X_RefundCancel" name="Refund payment (minus fee)">
+      <bpmn:incoming>Flow_B_Cancel_X_RefundCancel</bpmn:incoming>
+      <bpmn:outgoing>Flow_X_RefundCancel_M_RTS</bpmn:outgoing>
+      <bpmn:compensateEventDefinition id="EvDef_9" activityRef="T_Payment" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:userTask id="T_Trace" name="Trace parcel">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="trace-parcel" />
+        <zeebe:assignmentDefinition candidateGroups="hub-staff" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_B_NoScan_T_Trace</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Trace_G_Found</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="G_Found" name="Parcel found?" default="Flow_G_Found_M_Claim">
+      <bpmn:incoming>Flow_T_Trace_G_Found</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Found_M_Transit</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Found_M_Claim</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="T_NotifyRecipient" name="Notify recipient">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notify-recipient" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_M_Customs_T_NotifyRecipient</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_NotifyRecipient_M_Attempt</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:exclusiveGateway id="M_Attempt">
+      <bpmn:incoming>Flow_T_NotifyRecipient_M_Attempt</bpmn:incoming>
+      <bpmn:incoming>Flow_C_NextDay_M_Attempt</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_Attempt_T_Deliver</bpmn:outgoing>
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="T_Deliver" name="Attempt delivery">
       <bpmn:extensionElements>
@@ -198,6 +488,7 @@
       <bpmn:incoming>Flow_M_Attempt_T_Deliver</bpmn:incoming>
       <bpmn:outgoing>Flow_T_Deliver_G_Outcome</bpmn:outgoing>
     </bpmn:userTask>
+<<<<<<< HEAD
     <bpmn:exclusiveGateway id="M_Attempt">
       <bpmn:incoming>Flow_M_Customs_M_Attempt</bpmn:incoming>
       <bpmn:incoming>Flow_C_NextDay_M_Attempt</bpmn:incoming>
@@ -288,6 +579,210 @@
       <bpmn:outgoing>Flow_S_Booking_T_Validate</bpmn:outgoing>
       <bpmn:messageEventDefinition id="EvDef_1" messageRef="Message_1" />
     </bpmn:startEvent>
+=======
+    <bpmn:exclusiveGateway id="G_Outcome" name="Delivery outcome?" default="Flow_G_Outcome_M_RTS">
+      <bpmn:incoming>Flow_T_Deliver_G_Outcome</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Outcome_T_Close</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Outcome_T_CountDelivery</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Outcome_M_RTS</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Outcome_M_Claim</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="G_Attempts" name="Attempts &#60; 3?" default="Flow_G_Attempts_M_RTS">
+      <bpmn:incoming>Flow_T_CountDelivery_G_Attempts</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Attempts_C_NextDay</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Attempts_M_RTS</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="C_NextDay" name="Next working day">
+      <bpmn:incoming>Flow_G_Attempts_C_NextDay</bpmn:incoming>
+      <bpmn:outgoing>Flow_C_NextDay_M_Attempt</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="EvDef_11">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P1D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="T_Close" name="Close shipment &#38; invoice">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="close-shipment-invoice" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Outcome_T_Close</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Close_E_Delivered</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="E_Delivered" name="Shipment delivered">
+      <bpmn:incoming>Flow_T_Close_E_Delivered</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="M_RTS">
+      <bpmn:incoming>Flow_X_RefundCancel_M_RTS</bpmn:incoming>
+      <bpmn:incoming>Flow_B_CustomsTimeout_M_RTS</bpmn:incoming>
+      <bpmn:incoming>Flow_G_Outcome_M_RTS</bpmn:incoming>
+      <bpmn:incoming>Flow_G_Attempts_M_RTS</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_RTS_T_Return</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:manualTask id="T_Return" name="Return parcel to shipper">
+      <bpmn:incoming>Flow_M_RTS_T_Return</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Return_E_Returned</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:endEvent id="E_Returned" name="Returned to sender">
+      <bpmn:incoming>Flow_T_Return_E_Returned</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="M_Claim">
+      <bpmn:incoming>Flow_G_Damaged_M_Claim</bpmn:incoming>
+      <bpmn:incoming>Flow_G_Found_M_Claim</bpmn:incoming>
+      <bpmn:incoming>Flow_G_Outcome_M_Claim</bpmn:incoming>
+      <bpmn:outgoing>Flow_M_Claim_T_Cover</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:businessRuleTask id="T_Cover" name="Check insurance cover">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="claim-cover" resultVariable="claimCover" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_M_Claim_T_Cover</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Cover_G_Covered</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="G_Covered" name="Covered?" default="Flow_G_Covered_T_ClaimDeclined">
+      <bpmn:incoming>Flow_T_Cover_G_Covered</bpmn:incoming>
+      <bpmn:outgoing>Flow_G_Covered_T_Assess</bpmn:outgoing>
+      <bpmn:outgoing>Flow_G_Covered_T_ClaimDeclined</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="T_Assess" name="Assess &#38; settle claim">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="assess-claim" />
+        <zeebe:assignmentDefinition candidateGroups="claims-officers" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Covered_T_Assess</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_Assess_T_PayClaim</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="T_PayClaim" name="Pay compensation">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="pay-compensation" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_T_Assess_T_PayClaim</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_PayClaim_E_ClaimSettled</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="E_ClaimSettled" name="Claim settled">
+      <bpmn:incoming>Flow_T_PayClaim_E_ClaimSettled</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sendTask id="T_ClaimDeclined" name="Inform shipper: claim declined">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="inform-shipper-claim-declined" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_G_Covered_T_ClaimDeclined</bpmn:incoming>
+      <bpmn:outgoing>Flow_T_ClaimDeclined_E_ClaimDeclined</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="E_ClaimDeclined" name="Claim declined">
+      <bpmn:incoming>Flow_T_ClaimDeclined_E_ClaimDeclined</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="B_NoScan" name="No scan for 48 h" attachedToRef="SP_Linehaul">
+      <bpmn:outgoing>Flow_B_NoScan_T_Trace</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="EvDef_10">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT48H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="B_Cancel" name="Cancellation requested" attachedToRef="SP_Linehaul">
+      <bpmn:outgoing>Flow_B_Cancel_X_RefundCancel</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="EvDef_8" messageRef="Message_4" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="B_Delay" name="ETA exceeded" cancelActivity="false" attachedToRef="SP_Linehaul">
+      <bpmn:outgoing>Flow_B_Delay_T_DelayNotice</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="EvDef_7">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT4H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="B_CustomsTimeout" name="Held &#62; 5 days" attachedToRef="T_Customs">
+      <bpmn:outgoing>Flow_B_CustomsTimeout_M_RTS</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="EvDef_6">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P5D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="B_PayComp" attachedToRef="T_Payment">
+      <bpmn:compensateEventDefinition id="EvDef_3" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="B_PayFailed" name="Payment failed" attachedToRef="T_Payment">
+      <bpmn:outgoing>Flow_B_PayFailed_E_PayFailed</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="EvDef_2" errorRef="Error_1" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_S_Booking_T_Validate" sourceRef="S_Booking" targetRef="T_Validate" />
+    <bpmn:sequenceFlow id="Flow_T_Validate_G_Valid" sourceRef="T_Validate" targetRef="G_Valid" />
+    <bpmn:sequenceFlow id="Flow_G_Valid_T_Payment" name="Yes" sourceRef="G_Valid" targetRef="T_Payment">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=bookingResult.valid = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Valid_T_Rejected" name="No" sourceRef="G_Valid" targetRef="T_Rejected" />
+    <bpmn:sequenceFlow id="Flow_T_Rejected_E_Rejected" sourceRef="T_Rejected" targetRef="E_Rejected" />
+    <bpmn:sequenceFlow id="Flow_T_Payment_T_Schedule" sourceRef="T_Payment" targetRef="T_Schedule" />
+    <bpmn:sequenceFlow id="Flow_B_PayFailed_E_PayFailed" sourceRef="B_PayFailed" targetRef="E_PayFailed" />
+    <bpmn:sequenceFlow id="Flow_T_Schedule_M_Pickup" sourceRef="T_Schedule" targetRef="M_Pickup" />
+    <bpmn:sequenceFlow id="Flow_G_RetryPickup_M_Pickup" name="Yes" sourceRef="G_RetryPickup" targetRef="M_Pickup">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=pickupAttempts &lt; 2</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_M_Pickup_T_Collect" sourceRef="M_Pickup" targetRef="T_Collect" />
+    <bpmn:sequenceFlow id="Flow_T_Collect_G_Collected" sourceRef="T_Collect" targetRef="G_Collected" />
+    <bpmn:sequenceFlow id="Flow_G_Collected_T_CountPickup" name="No" sourceRef="G_Collected" targetRef="T_CountPickup" />
+    <bpmn:sequenceFlow id="Flow_G_Collected_G_Split" name="Yes" sourceRef="G_Collected" targetRef="G_Split">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=pickupOutcome = "COLLECTED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_T_CountPickup_G_RetryPickup" sourceRef="T_CountPickup" targetRef="G_RetryPickup" />
+    <bpmn:sequenceFlow id="Flow_G_RetryPickup_X_RefundPickup" name="No" sourceRef="G_RetryPickup" targetRef="X_RefundPickup" />
+    <bpmn:sequenceFlow id="Flow_X_RefundPickup_E_Cancelled" sourceRef="X_RefundPickup" targetRef="E_Cancelled" />
+    <bpmn:sequenceFlow id="Flow_G_Split_T_Handover" sourceRef="G_Split" targetRef="T_Handover" />
+    <bpmn:sequenceFlow id="Flow_G_Split_T_Tracking" sourceRef="G_Split" targetRef="T_Tracking" />
+    <bpmn:sequenceFlow id="Flow_T_Handover_G_Join" sourceRef="T_Handover" targetRef="G_Join" />
+    <bpmn:sequenceFlow id="Flow_T_Tracking_G_Join" sourceRef="T_Tracking" targetRef="G_Join" />
+    <bpmn:sequenceFlow id="Flow_G_Join_M_Transit" sourceRef="G_Join" targetRef="M_Transit" />
+    <bpmn:sequenceFlow id="Flow_G_Found_M_Transit" name="Yes" sourceRef="G_Found" targetRef="M_Transit">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=traceResult = "FOUND"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_M_Transit_T_Inspect" sourceRef="M_Transit" targetRef="T_Inspect" />
+    <bpmn:sequenceFlow id="Flow_T_Inspect_G_Damaged" sourceRef="T_Inspect" targetRef="G_Damaged" />
+    <bpmn:sequenceFlow id="Flow_G_Damaged_SP_Linehaul" name="No" sourceRef="G_Damaged" targetRef="SP_Linehaul" />
+    <bpmn:sequenceFlow id="Flow_G_Damaged_M_Claim" name="Yes" sourceRef="G_Damaged" targetRef="M_Claim">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=parcelCondition = "CONTENTS_DAMAGED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Outcome_T_CountDelivery" name="Not available" sourceRef="G_Outcome" targetRef="T_CountDelivery">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=deliveryOutcome = "NOT_AVAILABLE"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_T_CountDelivery_G_Attempts" sourceRef="T_CountDelivery" targetRef="G_Attempts" />
+    <bpmn:sequenceFlow id="Flow_SP_Linehaul_G_Intl" sourceRef="SP_Linehaul" targetRef="G_Intl" />
+    <bpmn:sequenceFlow id="Flow_G_Intl_T_Customs" name="Yes" sourceRef="G_Intl" targetRef="T_Customs">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=international = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Intl_M_Customs" name="No" sourceRef="G_Intl" targetRef="M_Customs" />
+    <bpmn:sequenceFlow id="Flow_T_Customs_M_Customs" sourceRef="T_Customs" targetRef="M_Customs" />
+    <bpmn:sequenceFlow id="Flow_M_Customs_T_NotifyRecipient" sourceRef="M_Customs" targetRef="T_NotifyRecipient" />
+    <bpmn:sequenceFlow id="Flow_B_Delay_T_DelayNotice" sourceRef="B_Delay" targetRef="T_DelayNotice" />
+    <bpmn:sequenceFlow id="Flow_T_DelayNotice_E_Informed" sourceRef="T_DelayNotice" targetRef="E_Informed" />
+    <bpmn:sequenceFlow id="Flow_B_Cancel_X_RefundCancel" sourceRef="B_Cancel" targetRef="X_RefundCancel" />
+    <bpmn:sequenceFlow id="Flow_X_RefundCancel_M_RTS" sourceRef="X_RefundCancel" targetRef="M_RTS" />
+    <bpmn:sequenceFlow id="Flow_B_NoScan_T_Trace" sourceRef="B_NoScan" targetRef="T_Trace" />
+    <bpmn:sequenceFlow id="Flow_T_Trace_G_Found" sourceRef="T_Trace" targetRef="G_Found" />
+    <bpmn:sequenceFlow id="Flow_G_Found_M_Claim" name="No (lost)" sourceRef="G_Found" targetRef="M_Claim" />
+    <bpmn:sequenceFlow id="Flow_T_NotifyRecipient_M_Attempt" sourceRef="T_NotifyRecipient" targetRef="M_Attempt" />
+    <bpmn:sequenceFlow id="Flow_C_NextDay_M_Attempt" sourceRef="C_NextDay" targetRef="M_Attempt" />
+    <bpmn:sequenceFlow id="Flow_M_Attempt_T_Deliver" sourceRef="M_Attempt" targetRef="T_Deliver" />
+    <bpmn:sequenceFlow id="Flow_T_Deliver_G_Outcome" sourceRef="T_Deliver" targetRef="G_Outcome" />
+    <bpmn:sequenceFlow id="Flow_G_Outcome_T_Close" name="Delivered" sourceRef="G_Outcome" targetRef="T_Close">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=deliveryOutcome = "DELIVERED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Outcome_M_RTS" name="Refused / COD not paid" sourceRef="G_Outcome" targetRef="M_RTS" />
+    <bpmn:sequenceFlow id="Flow_G_Outcome_M_Claim" name="Damaged" sourceRef="G_Outcome" targetRef="M_Claim">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=deliveryOutcome = "DAMAGED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Attempts_C_NextDay" name="Yes" sourceRef="G_Attempts" targetRef="C_NextDay">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=deliveryAttempts &lt; 3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Attempts_M_RTS" name="No" sourceRef="G_Attempts" targetRef="M_RTS" />
+    <bpmn:sequenceFlow id="Flow_T_Close_E_Delivered" sourceRef="T_Close" targetRef="E_Delivered" />
+    <bpmn:sequenceFlow id="Flow_B_CustomsTimeout_M_RTS" sourceRef="B_CustomsTimeout" targetRef="M_RTS" />
+    <bpmn:sequenceFlow id="Flow_M_RTS_T_Return" sourceRef="M_RTS" targetRef="T_Return" />
+    <bpmn:sequenceFlow id="Flow_T_Return_E_Returned" sourceRef="T_Return" targetRef="E_Returned" />
+    <bpmn:sequenceFlow id="Flow_M_Claim_T_Cover" sourceRef="M_Claim" targetRef="T_Cover" />
+    <bpmn:sequenceFlow id="Flow_T_Cover_G_Covered" sourceRef="T_Cover" targetRef="G_Covered" />
+    <bpmn:sequenceFlow id="Flow_G_Covered_T_Assess" name="Yes" sourceRef="G_Covered" targetRef="T_Assess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=claimCover.covered = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_G_Covered_T_ClaimDeclined" name="No" sourceRef="G_Covered" targetRef="T_ClaimDeclined" />
+    <bpmn:sequenceFlow id="Flow_T_Assess_T_PayClaim" sourceRef="T_Assess" targetRef="T_PayClaim" />
+    <bpmn:sequenceFlow id="Flow_T_PayClaim_E_ClaimSettled" sourceRef="T_PayClaim" targetRef="E_ClaimSettled" />
+    <bpmn:sequenceFlow id="Flow_T_ClaimDeclined_E_ClaimDeclined" sourceRef="T_ClaimDeclined" targetRef="E_ClaimDeclined" />
+    <bpmn:association id="Assoc_B_PayComp_T_Refund" associationDirection="One" sourceRef="B_PayComp" targetRef="T_Refund" />
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
   </bpmn:process>
   <bpmn:message id="Message_1" name="Booking request" />
   <bpmn:message id="Message_2" name="Arrival scan">
@@ -295,16 +790,25 @@
       <zeebe:subscription correlationKey="=shipmentId" />
     </bpmn:extensionElements>
   </bpmn:message>
+<<<<<<< HEAD
   <bpmn:message id="Message_3" name="Cancellation request">
+=======
+  <bpmn:message id="Message_3" name="Customs cleared">
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="=shipmentId" />
     </bpmn:extensionElements>
   </bpmn:message>
+<<<<<<< HEAD
   <bpmn:message id="Message_4" name="Customs cleared">
+=======
+  <bpmn:message id="Message_4" name="Cancellation request">
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="=shipmentId" />
     </bpmn:extensionElements>
   </bpmn:message>
+<<<<<<< HEAD
   <bpmndi:BPMNDiagram id="Diagram_Collab_Defs_Shipment">
     <bpmndi:BPMNPlane id="Plane_Collab_Defs_Shipment" bpmnElement="Collab_Defs_Shipment">
       <bpmndi:BPMNShape id="Pool_Courier_di" bpmnElement="Pool_Courier" isHorizontal="true">
@@ -721,8 +1225,716 @@
         <di:waypoint x="1720" y="890" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1678" y="513" width="35" height="14" />
+=======
+  <bpmn:error id="Error_1" name="Payment failed" errorCode="PAYMENT_FAILED" />
+  <bpmndi:BPMNDiagram id="Diagram_Collab_Defs_Shipment">
+    <bpmndi:BPMNPlane id="Plane_Collab_Defs_Shipment" bpmnElement="Collab_Defs_Shipment">
+      <bpmndi:BPMNShape id="Pool_Courier_di" bpmnElement="Pool_Courier" isHorizontal="true">
+        <dc:Bounds x="160" y="210" width="3440" height="1400" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_DeliveryAgent_di" bpmnElement="Lane_DeliveryAgent" isHorizontal="true">
+        <dc:Bounds x="190" y="1330" width="3410" height="280" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Claims_di" bpmnElement="Lane_Claims" isHorizontal="true">
+        <dc:Bounds x="190" y="1050" width="3410" height="280" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Hub_di" bpmnElement="Lane_Hub" isHorizontal="true">
+        <dc:Bounds x="190" y="770" width="3410" height="280" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_PickupAgent_di" bpmnElement="Lane_PickupAgent" isHorizontal="true">
+        <dc:Bounds x="190" y="630" width="3410" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ControlTower_di" bpmnElement="Lane_ControlTower" isHorizontal="true">
+        <dc:Bounds x="190" y="210" width="3410" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Booking_di" bpmnElement="S_Booking">
+        <dc:Bounds x="272" y="402" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="248" y="442" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Validate_di" bpmnElement="T_Validate">
+        <dc:Bounds x="380" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Valid_di" bpmnElement="G_Valid" isMarkerVisible="true">
+        <dc:Bounds x="545" y="395" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="534" y="449" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Rejected_di" bpmnElement="T_Rejected">
+        <dc:Bounds x="520" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Rejected_di" bpmnElement="E_Rejected">
+        <dc:Bounds x="692" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="669" y="302" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Payment_di" bpmnElement="T_Payment">
+        <dc:Bounds x="660" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_PayFailed_di" bpmnElement="E_PayFailed">
+        <dc:Bounds x="832" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="814" y="582" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Refund_di" bpmnElement="T_Refund">
+        <dc:Bounds x="520" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Schedule_di" bpmnElement="T_Schedule">
+        <dc:Bounds x="800" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_Pickup_di" bpmnElement="M_Pickup" isMarkerVisible="true">
+        <dc:Bounds x="965" y="395" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Collect_di" bpmnElement="T_Collect">
+        <dc:Bounds x="1080" y="660" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Collected_di" bpmnElement="G_Collected" isMarkerVisible="true">
+        <dc:Bounds x="1245" y="675" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1228" y="729" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_CountPickup_di" bpmnElement="T_CountPickup">
+        <dc:Bounds x="1220" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_RetryPickup_di" bpmnElement="G_RetryPickup" isMarkerVisible="true">
+        <dc:Bounds x="1385" y="535" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1376" y="589" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="X_RefundPickup_di" bpmnElement="X_RefundPickup">
+        <dc:Bounds x="1532" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1510" y="582" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Cancelled_di" bpmnElement="E_Cancelled">
+        <dc:Bounds x="1672" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1645" y="582" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Split_di" bpmnElement="G_Split">
+        <dc:Bounds x="1385" y="675" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Handover_di" bpmnElement="T_Handover">
+        <dc:Bounds x="1500" y="660" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Tracking_di" bpmnElement="T_Tracking">
+        <dc:Bounds x="1500" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Join_di" bpmnElement="G_Join">
+        <dc:Bounds x="1665" y="815" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_Transit_di" bpmnElement="M_Transit" isMarkerVisible="true">
+        <dc:Bounds x="1805" y="815" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Inspect_di" bpmnElement="T_Inspect">
+        <dc:Bounds x="1920" y="800" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Damaged_di" bpmnElement="G_Damaged" isMarkerVisible="true">
+        <dc:Bounds x="2085" y="815" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2060" y="783" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_CountDelivery_di" bpmnElement="T_CountDelivery">
+        <dc:Bounds x="3180" y="1470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Intl_di" bpmnElement="G_Intl" isMarkerVisible="true">
+        <dc:Bounds x="2365" y="815" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2357" y="869" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Customs_di" bpmnElement="T_Customs">
+        <dc:Bounds x="2480" y="800" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_Customs_di" bpmnElement="M_Customs" isMarkerVisible="true">
+        <dc:Bounds x="2645" y="815" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_DelayNotice_di" bpmnElement="T_DelayNotice">
+        <dc:Bounds x="2340" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Informed_di" bpmnElement="E_Informed">
+        <dc:Bounds x="2512" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2488" y="582" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="X_RefundCancel_di" bpmnElement="X_RefundCancel">
+        <dc:Bounds x="2092" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2070" y="510" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Trace_di" bpmnElement="T_Trace">
+        <dc:Bounds x="2200" y="940" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Found_di" bpmnElement="G_Found" isMarkerVisible="true">
+        <dc:Bounds x="2365" y="955" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2285" y="943" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_NotifyRecipient_di" bpmnElement="T_NotifyRecipient">
+        <dc:Bounds x="2760" y="1360" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_Attempt_di" bpmnElement="M_Attempt" isMarkerVisible="true">
+        <dc:Bounds x="2925" y="1375" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Deliver_di" bpmnElement="T_Deliver">
+        <dc:Bounds x="3040" y="1360" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Outcome_di" bpmnElement="G_Outcome" isMarkerVisible="true">
+        <dc:Bounds x="3205" y="1375" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3113" y="1349" width="92" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Attempts_di" bpmnElement="G_Attempts" isMarkerVisible="true">
+        <dc:Bounds x="3345" y="1515" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3336" y="1569" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="C_NextDay_di" bpmnElement="C_NextDay">
+        <dc:Bounds x="3492" y="1522" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3468" y="1490" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Close_di" bpmnElement="T_Close">
+        <dc:Bounds x="3320" y="1360" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Delivered_di" bpmnElement="E_Delivered">
+        <dc:Bounds x="3492" y="1382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3463" y="1422" width="95" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_RTS_di" bpmnElement="M_RTS" isMarkerVisible="true">
+        <dc:Bounds x="2785" y="955" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Return_di" bpmnElement="T_Return">
+        <dc:Bounds x="2900" y="940" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_Returned_di" bpmnElement="E_Returned">
+        <dc:Bounds x="3072" y="962" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3043" y="1002" width="95" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="M_Claim_di" bpmnElement="M_Claim" isMarkerVisible="true">
+        <dc:Bounds x="2785" y="1095" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Cover_di" bpmnElement="T_Cover">
+        <dc:Bounds x="2900" y="1080" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_Covered_di" bpmnElement="G_Covered" isMarkerVisible="true">
+        <dc:Bounds x="3065" y="1095" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3066" y="1077" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_Assess_di" bpmnElement="T_Assess">
+        <dc:Bounds x="3180" y="1080" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_PayClaim_di" bpmnElement="T_PayClaim">
+        <dc:Bounds x="3320" y="1080" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_ClaimSettled_di" bpmnElement="E_ClaimSettled">
+        <dc:Bounds x="3492" y="1102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3478" y="1142" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_ClaimDeclined_di" bpmnElement="T_ClaimDeclined">
+        <dc:Bounds x="3040" y="1220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_ClaimDeclined_di" bpmnElement="E_ClaimDeclined">
+        <dc:Bounds x="3212" y="1242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3194" y="1282" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SP_Linehaul_di" bpmnElement="SP_Linehaul" isExpanded="false">
+        <dc:Bounds x="2200" y="800" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Assoc_B_PayComp_T_Refund_di" bpmnElement="Assoc_B_PayComp_T_Refund">
+        <di:waypoint x="680" y="478" />
+        <di:waypoint x="680" y="560" />
+        <di:waypoint x="620" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="B_NoScan_di" bpmnElement="B_NoScan">
+        <dc:Bounds x="2232" y="862" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2266" y="900" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_Cancel_di" bpmnElement="B_Cancel">
+        <dc:Bounds x="2202" y="782" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2134" y="746" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_Delay_di" bpmnElement="B_Delay">
+        <dc:Bounds x="2262" y="782" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2300" y="766" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_CustomsTimeout_di" bpmnElement="B_CustomsTimeout">
+        <dc:Bounds x="2512" y="862" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2552" y="900" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_PayComp_di" bpmnElement="B_PayComp">
+        <dc:Bounds x="662" y="442" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_PayFailed_di" bpmnElement="B_PayFailed">
+        <dc:Bounds x="722" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="760" y="480" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_S_Booking_T_Validate_di" bpmnElement="Flow_S_Booking_T_Validate">
+        <di:waypoint x="308" y="420" />
+        <di:waypoint x="380" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Validate_G_Valid_di" bpmnElement="Flow_T_Validate_G_Valid">
+        <di:waypoint x="480" y="420" />
+        <di:waypoint x="545" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Valid_T_Payment_di" bpmnElement="Flow_G_Valid_T_Payment">
+        <di:waypoint x="595" y="420" />
+        <di:waypoint x="660" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="607" y="403" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Valid_T_Rejected_di" bpmnElement="Flow_G_Valid_T_Rejected">
+        <di:waypoint x="570" y="395" />
+        <di:waypoint x="570" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="583" y="377" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Rejected_E_Rejected_di" bpmnElement="Flow_T_Rejected_E_Rejected">
+        <di:waypoint x="620" y="280" />
+        <di:waypoint x="692" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Payment_T_Schedule_di" bpmnElement="Flow_T_Payment_T_Schedule">
+        <di:waypoint x="760" y="420" />
+        <di:waypoint x="800" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B_PayFailed_E_PayFailed_di" bpmnElement="Flow_B_PayFailed_E_PayFailed">
+        <di:waypoint x="740" y="478" />
+        <di:waypoint x="740" y="560" />
+        <di:waypoint x="832" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Schedule_M_Pickup_di" bpmnElement="Flow_T_Schedule_M_Pickup">
+        <di:waypoint x="900" y="420" />
+        <di:waypoint x="965" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_RetryPickup_M_Pickup_di" bpmnElement="Flow_G_RetryPickup_M_Pickup">
+        <di:waypoint x="1410" y="535" />
+        <di:waypoint x="1410" y="460" />
+        <di:waypoint x="990" y="460" />
+        <di:waypoint x="990" y="445" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1421" y="517" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_Pickup_T_Collect_di" bpmnElement="Flow_M_Pickup_T_Collect">
+        <di:waypoint x="990" y="445" />
+        <di:waypoint x="990" y="700" />
+        <di:waypoint x="1080" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Collect_G_Collected_di" bpmnElement="Flow_T_Collect_G_Collected">
+        <di:waypoint x="1180" y="700" />
+        <di:waypoint x="1245" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Collected_T_CountPickup_di" bpmnElement="Flow_G_Collected_T_CountPickup">
+        <di:waypoint x="1270" y="675" />
+        <di:waypoint x="1270" y="600" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1283" y="657" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Collected_G_Split_di" bpmnElement="Flow_G_Collected_G_Split">
+        <di:waypoint x="1295" y="700" />
+        <di:waypoint x="1385" y="700" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1307" y="683" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_CountPickup_G_RetryPickup_di" bpmnElement="Flow_T_CountPickup_G_RetryPickup">
+        <di:waypoint x="1320" y="560" />
+        <di:waypoint x="1385" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_RetryPickup_X_RefundPickup_di" bpmnElement="Flow_G_RetryPickup_X_RefundPickup">
+        <di:waypoint x="1435" y="560" />
+        <di:waypoint x="1532" y="560" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1449" y="543" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_X_RefundPickup_E_Cancelled_di" bpmnElement="Flow_X_RefundPickup_E_Cancelled">
+        <di:waypoint x="1568" y="560" />
+        <di:waypoint x="1672" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Split_T_Handover_di" bpmnElement="Flow_G_Split_T_Handover">
+        <di:waypoint x="1435" y="700" />
+        <di:waypoint x="1500" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Split_T_Tracking_di" bpmnElement="Flow_G_Split_T_Tracking">
+        <di:waypoint x="1410" y="675" />
+        <di:waypoint x="1410" y="600" />
+        <di:waypoint x="1490" y="600" />
+        <di:waypoint x="1490" y="420" />
+        <di:waypoint x="1500" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Handover_G_Join_di" bpmnElement="Flow_T_Handover_G_Join">
+        <di:waypoint x="1600" y="700" />
+        <di:waypoint x="1690" y="700" />
+        <di:waypoint x="1690" y="815" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Tracking_G_Join_di" bpmnElement="Flow_T_Tracking_G_Join">
+        <di:waypoint x="1600" y="420" />
+        <di:waypoint x="1660" y="420" />
+        <di:waypoint x="1660" y="800" />
+        <di:waypoint x="1690" y="800" />
+        <di:waypoint x="1690" y="815" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Join_M_Transit_di" bpmnElement="Flow_G_Join_M_Transit">
+        <di:waypoint x="1715" y="840" />
+        <di:waypoint x="1805" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Found_M_Transit_di" bpmnElement="Flow_G_Found_M_Transit">
+        <di:waypoint x="2390" y="955" />
+        <di:waypoint x="2390" y="910" />
+        <di:waypoint x="1830" y="910" />
+        <di:waypoint x="1830" y="865" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2401" y="937" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_Transit_T_Inspect_di" bpmnElement="Flow_M_Transit_T_Inspect">
+        <di:waypoint x="1855" y="840" />
+        <di:waypoint x="1920" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Inspect_G_Damaged_di" bpmnElement="Flow_T_Inspect_G_Damaged">
+        <di:waypoint x="2020" y="840" />
+        <di:waypoint x="2085" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Damaged_SP_Linehaul_di" bpmnElement="Flow_G_Damaged_SP_Linehaul">
+        <di:waypoint x="2135" y="840" />
+        <di:waypoint x="2200" y="840" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2149" y="823" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Damaged_M_Claim_di" bpmnElement="Flow_G_Damaged_M_Claim">
+        <di:waypoint x="2110" y="865" />
+        <di:waypoint x="2110" y="1120" />
+        <di:waypoint x="2785" y="1120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2121" y="869" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Outcome_T_CountDelivery_di" bpmnElement="Flow_G_Outcome_T_CountDelivery">
+        <di:waypoint x="3230" y="1425" />
+        <di:waypoint x="3230" y="1470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3244" y="1425" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_CountDelivery_G_Attempts_di" bpmnElement="Flow_T_CountDelivery_G_Attempts">
+        <di:waypoint x="3280" y="1510" />
+        <di:waypoint x="3313" y="1510" />
+        <di:waypoint x="3313" y="1540" />
+        <di:waypoint x="3345" y="1540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SP_Linehaul_G_Intl_di" bpmnElement="Flow_SP_Linehaul_G_Intl">
+        <di:waypoint x="2300" y="840" />
+        <di:waypoint x="2365" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Intl_T_Customs_di" bpmnElement="Flow_G_Intl_T_Customs">
+        <di:waypoint x="2415" y="840" />
+        <di:waypoint x="2480" y="840" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2427" y="823" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Intl_M_Customs_di" bpmnElement="Flow_G_Intl_M_Customs">
+        <di:waypoint x="2390" y="815" />
+        <di:waypoint x="2390" y="790" />
+        <di:waypoint x="2670" y="790" />
+        <di:waypoint x="2670" y="815" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2403" y="797" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Customs_M_Customs_di" bpmnElement="Flow_T_Customs_M_Customs">
+        <di:waypoint x="2580" y="840" />
+        <di:waypoint x="2645" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_Customs_T_NotifyRecipient_di" bpmnElement="Flow_M_Customs_T_NotifyRecipient">
+        <di:waypoint x="2670" y="865" />
+        <di:waypoint x="2670" y="1400" />
+        <di:waypoint x="2760" y="1400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B_Delay_T_DelayNotice_di" bpmnElement="Flow_B_Delay_T_DelayNotice">
+        <di:waypoint x="2280" y="782" />
+        <di:waypoint x="2280" y="560" />
+        <di:waypoint x="2340" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_DelayNotice_E_Informed_di" bpmnElement="Flow_T_DelayNotice_E_Informed">
+        <di:waypoint x="2440" y="560" />
+        <di:waypoint x="2512" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B_Cancel_X_RefundCancel_di" bpmnElement="Flow_B_Cancel_X_RefundCancel">
+        <di:waypoint x="2220" y="782" />
+        <di:waypoint x="2220" y="590" />
+        <di:waypoint x="2110" y="590" />
+        <di:waypoint x="2110" y="578" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_X_RefundCancel_M_RTS_di" bpmnElement="Flow_X_RefundCancel_M_RTS">
+        <di:waypoint x="2110" y="578" />
+        <di:waypoint x="2110" y="740" />
+        <di:waypoint x="2810" y="740" />
+        <di:waypoint x="2810" y="955" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B_NoScan_T_Trace_di" bpmnElement="Flow_B_NoScan_T_Trace">
+        <di:waypoint x="2250" y="898" />
+        <di:waypoint x="2250" y="940" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Trace_G_Found_di" bpmnElement="Flow_T_Trace_G_Found">
+        <di:waypoint x="2300" y="980" />
+        <di:waypoint x="2365" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Found_M_Claim_di" bpmnElement="Flow_G_Found_M_Claim">
+        <di:waypoint x="2390" y="1005" />
+        <di:waypoint x="2390" y="1080" />
+        <di:waypoint x="2810" y="1080" />
+        <di:waypoint x="2810" y="1095" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2402" y="1009" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_NotifyRecipient_M_Attempt_di" bpmnElement="Flow_T_NotifyRecipient_M_Attempt">
+        <di:waypoint x="2860" y="1400" />
+        <di:waypoint x="2925" y="1400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C_NextDay_M_Attempt_di" bpmnElement="Flow_C_NextDay_M_Attempt">
+        <di:waypoint x="3510" y="1558" />
+        <di:waypoint x="3510" y="1590" />
+        <di:waypoint x="2950" y="1590" />
+        <di:waypoint x="2950" y="1425" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_Attempt_T_Deliver_di" bpmnElement="Flow_M_Attempt_T_Deliver">
+        <di:waypoint x="2975" y="1400" />
+        <di:waypoint x="3040" y="1400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Deliver_G_Outcome_di" bpmnElement="Flow_T_Deliver_G_Outcome">
+        <di:waypoint x="3140" y="1400" />
+        <di:waypoint x="3205" y="1400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Outcome_T_Close_di" bpmnElement="Flow_G_Outcome_T_Close">
+        <di:waypoint x="3255" y="1400" />
+        <di:waypoint x="3320" y="1400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3266" y="1383" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Outcome_M_RTS_di" bpmnElement="Flow_G_Outcome_M_RTS">
+        <di:waypoint x="3230" y="1375" />
+        <di:waypoint x="3230" y="1310" />
+        <di:waypoint x="2850" y="1310" />
+        <di:waypoint x="2850" y="1020" />
+        <di:waypoint x="2810" y="1020" />
+        <di:waypoint x="2810" y="1005" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3244" y="1343" width="93" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Outcome_M_Claim_di" bpmnElement="Flow_G_Outcome_M_Claim">
+        <di:waypoint x="3230" y="1425" />
+        <di:waypoint x="3230" y="1440" />
+        <di:waypoint x="3210" y="1440" />
+        <di:waypoint x="3210" y="1320" />
+        <di:waypoint x="2810" y="1320" />
+        <di:waypoint x="2810" y="1145" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3179" y="1423" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Attempts_C_NextDay_di" bpmnElement="Flow_G_Attempts_C_NextDay">
+        <di:waypoint x="3395" y="1540" />
+        <di:waypoint x="3492" y="1540" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3407" y="1523" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Attempts_M_RTS_di" bpmnElement="Flow_G_Attempts_M_RTS">
+        <di:waypoint x="3370" y="1515" />
+        <di:waypoint x="3370" y="1450" />
+        <di:waypoint x="2870" y="1450" />
+        <di:waypoint x="2870" y="980" />
+        <di:waypoint x="2835" y="980" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3383" y="1497" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Close_E_Delivered_di" bpmnElement="Flow_T_Close_E_Delivered">
+        <di:waypoint x="3420" y="1400" />
+        <di:waypoint x="3492" y="1400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B_CustomsTimeout_M_RTS_di" bpmnElement="Flow_B_CustomsTimeout_M_RTS">
+        <di:waypoint x="2530" y="898" />
+        <di:waypoint x="2530" y="980" />
+        <di:waypoint x="2785" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_RTS_T_Return_di" bpmnElement="Flow_M_RTS_T_Return">
+        <di:waypoint x="2835" y="980" />
+        <di:waypoint x="2900" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Return_E_Returned_di" bpmnElement="Flow_T_Return_E_Returned">
+        <di:waypoint x="3000" y="980" />
+        <di:waypoint x="3072" y="980" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_M_Claim_T_Cover_di" bpmnElement="Flow_M_Claim_T_Cover">
+        <di:waypoint x="2835" y="1120" />
+        <di:waypoint x="2900" y="1120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Cover_G_Covered_di" bpmnElement="Flow_T_Cover_G_Covered">
+        <di:waypoint x="3000" y="1120" />
+        <di:waypoint x="3065" y="1120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Covered_T_Assess_di" bpmnElement="Flow_G_Covered_T_Assess">
+        <di:waypoint x="3115" y="1120" />
+        <di:waypoint x="3180" y="1120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3127" y="1103" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_G_Covered_T_ClaimDeclined_di" bpmnElement="Flow_G_Covered_T_ClaimDeclined">
+        <di:waypoint x="3090" y="1145" />
+        <di:waypoint x="3090" y="1220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3103" y="1149" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_Assess_T_PayClaim_di" bpmnElement="Flow_T_Assess_T_PayClaim">
+        <di:waypoint x="3280" y="1120" />
+        <di:waypoint x="3320" y="1120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_PayClaim_E_ClaimSettled_di" bpmnElement="Flow_T_PayClaim_E_ClaimSettled">
+        <di:waypoint x="3420" y="1120" />
+        <di:waypoint x="3492" y="1120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_T_ClaimDeclined_E_ClaimDeclined_di" bpmnElement="Flow_T_ClaimDeclined_E_ClaimDeclined">
+        <di:waypoint x="3140" y="1260" />
+        <di:waypoint x="3212" y="1260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Pool_Shipper_di" bpmnElement="Pool_Shipper" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="3440" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Pool_Recipient_di" bpmnElement="Pool_Recipient" isHorizontal="true">
+        <dc:Bounds x="160" y="1670" width="3440" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Msg_Pool_Shipper_S_Booking_di" bpmnElement="Msg_Pool_Shipper_S_Booking">
+        <di:waypoint x="290" y="150" />
+        <di:waypoint x="290" y="402" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="198" y="269" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_Rejected_Pool_Shipper_di" bpmnElement="Msg_T_Rejected_Pool_Shipper">
+        <di:waypoint x="570" y="240" />
+        <di:waypoint x="570" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="584" y="188" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_Tracking_Pool_Shipper_di" bpmnElement="Msg_T_Tracking_Pool_Shipper">
+        <di:waypoint x="1550" y="380" />
+        <di:waypoint x="1550" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1561" y="258" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_DelayNotice_Pool_Shipper_di" bpmnElement="Msg_T_DelayNotice_Pool_Shipper">
+        <di:waypoint x="2390" y="520" />
+        <di:waypoint x="2390" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2395" y="328" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_T_NotifyRecipient_Pool_Recipient_di" bpmnElement="Msg_T_NotifyRecipient_Pool_Recipient">
+        <di:waypoint x="2810" y="1440" />
+        <di:waypoint x="2810" y="1670" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2699" y="1541" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Msg_Pool_Shipper_B_Cancel_di" bpmnElement="Msg_Pool_Shipper_B_Cancel">
+        <di:waypoint x="2230" y="150" />
+        <di:waypoint x="2230" y="770" />
+        <di:waypoint x="2220" y="770" />
+        <di:waypoint x="2220" y="782" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2144" y="453" width="74" height="14" />
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
+<<<<<<< HEAD
+=======
+  <bpmndi:BPMNDiagram id="Diagram_SP_Linehaul">
+    <bpmndi:BPMNPlane id="Plane_SP_Linehaul" bpmnElement="SP_Linehaul">
+      <bpmndi:BPMNShape id="LH_S_di" bpmnElement="LH_S">
+        <dc:Bounds x="52" y="52" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="22" y="92" width="96" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LH_Load_di" bpmnElement="LH_Load">
+        <dc:Bounds x="160" y="30" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LH_Arrived_di" bpmnElement="LH_Arrived">
+        <dc:Bounds x="332" y="52" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="302" y="92" width="96" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LH_E_di" bpmnElement="LH_E">
+        <dc:Bounds x="472" y="52" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="442" y="92" width="96" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_LH_S_LH_Load_di" bpmnElement="Flow_LH_S_LH_Load">
+        <di:waypoint x="88" y="70" />
+        <di:waypoint x="160" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_LH_Load_LH_Arrived_di" bpmnElement="Flow_LH_Load_LH_Arrived">
+        <di:waypoint x="260" y="70" />
+        <di:waypoint x="332" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_LH_Arrived_LH_E_di" bpmnElement="Flow_LH_Arrived_LH_E">
+        <di:waypoint x="368" y="70" />
+        <di:waypoint x="472" y="70" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+>>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
 </bpmn:definitions>
