@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_loan_eligibility" name="Loan eligibility" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
   <decision id="loan-eligibility" name="Loan eligibility">
@@ -56,62 +55,3 @@
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
 </definitions>
-=======
-<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_loan_eligibility" name="Loan eligibility" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
-  <decision id="loan-eligibility" name="Loan eligibility">
-    <decisionTable id="DecisionTable_1" hitPolicy="FIRST">
-      <input id="Input_1" label="Applicant age">
-        <inputExpression id="InputExpression_1" typeRef="number"><text>applicantAge</text></inputExpression>
-      </input>
-      <input id="Input_2" label="Resident">
-        <inputExpression id="InputExpression_2" typeRef="boolean"><text>resident</text></inputExpression>
-      </input>
-      <input id="Input_3" label="Documents complete">
-        <inputExpression id="InputExpression_3" typeRef="boolean"><text>documentsComplete</text></inputExpression>
-      </input>
-      <output id="Output_1" label="Eligibility" name="eligibility" typeRef="string" />
-      <rule id="Rule_4">
-        <description>Too young</description>
-        <inputEntry id="UnaryTests_5"><text>&lt; 21</text></inputEntry>
-        <inputEntry id="UnaryTests_6"><text>-</text></inputEntry>
-        <inputEntry id="UnaryTests_7"><text>-</text></inputEntry>
-        <outputEntry id="LiteralExpression_8"><text>"INELIGIBLE"</text></outputEntry>
-      </rule>
-      <rule id="Rule_9">
-        <description>Too old</description>
-        <inputEntry id="UnaryTests_10"><text>&gt; 65</text></inputEntry>
-        <inputEntry id="UnaryTests_11"><text>-</text></inputEntry>
-        <inputEntry id="UnaryTests_12"><text>-</text></inputEntry>
-        <outputEntry id="LiteralExpression_13"><text>"INELIGIBLE"</text></outputEntry>
-      </rule>
-      <rule id="Rule_14">
-        <description>Non-resident</description>
-        <inputEntry id="UnaryTests_15"><text>-</text></inputEntry>
-        <inputEntry id="UnaryTests_16"><text>false</text></inputEntry>
-        <inputEntry id="UnaryTests_17"><text>-</text></inputEntry>
-        <outputEntry id="LiteralExpression_18"><text>"INELIGIBLE"</text></outputEntry>
-      </rule>
-      <rule id="Rule_19">
-        <description>Documents missing</description>
-        <inputEntry id="UnaryTests_20"><text>-</text></inputEntry>
-        <inputEntry id="UnaryTests_21"><text>-</text></inputEntry>
-        <inputEntry id="UnaryTests_22"><text>false</text></inputEntry>
-        <outputEntry id="LiteralExpression_23"><text>"INCOMPLETE"</text></outputEntry>
-      </rule>
-      <rule id="Rule_24">
-        <description>Eligible</description>
-        <inputEntry id="UnaryTests_25"><text>-</text></inputEntry>
-        <inputEntry id="UnaryTests_26"><text>-</text></inputEntry>
-        <inputEntry id="UnaryTests_27"><text>-</text></inputEntry>
-        <outputEntry id="LiteralExpression_28"><text>"OK"</text></outputEntry>
-      </rule>
-    </decisionTable>
-  </decision>
-  <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
-      <dmndi:DMNShape dmnElementRef="loan-eligibility"><dc:Bounds height="80" width="180" x="160" y="100" /></dmndi:DMNShape>
-    </dmndi:DMNDiagram>
-  </dmndi:DMNDI>
-</definitions>
->>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d

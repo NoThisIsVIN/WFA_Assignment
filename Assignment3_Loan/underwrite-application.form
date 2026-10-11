@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "components": [
     {
@@ -59,65 +58,3 @@
   },
   "schemaVersion": 16
 }
-=======
-{
-  "components": [
-    {
-      "type": "text",
-      "id": "Field_21",
-      "text": "### Underwrite application"
-    },
-    {
-      "type": "textfield",
-      "id": "Field_17",
-      "key": "applicationId",
-      "label": "Application ID",
-      "readonly": true
-    },
-    {
-      "type": "number",
-      "id": "Field_18",
-      "key": "creditScore",
-      "label": "Credit score",
-      "readonly": true
-    },
-    {
-      "type": "select",
-      "id": "Field_19",
-      "key": "underwritingDecision",
-      "label": "Decision",
-      "values": [
-        {
-          "label": "Approve",
-          "value": "APPROVE"
-        },
-        {
-          "label": "Decline",
-          "value": "DECLINE"
-        }
-      ],
-      "validate": {
-        "required": true
-      }
-    },
-    {
-      "type": "textarea",
-      "id": "Field_20",
-      "key": "reason",
-      "label": "Reason",
-      "validate": {
-        "required": true
-      }
-    }
-  ],
-  "type": "default",
-  "id": "underwrite-application",
-  "executionPlatform": "Camunda Cloud",
-  "executionPlatformVersion": "8.6.0",
-  "exporter": {
-    "name": "Camunda Modeler",
-    "version": "5.28.0"
-  },
-  "schemaVersion": 16
-}
->>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d

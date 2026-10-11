@@ -1,56 +1,3 @@
-<<<<<<< HEAD
-{
-  "components": [
-    {
-      "text": "### Collect parcel",
-      "type": "text",
-      "id": "Field_04"
-    },
-    {
-      "label": "Shipment ID",
-      "type": "textfield",
-      "id": "Field_01",
-      "key": "shipmentId",
-      "readonly": true
-    },
-    {
-      "label": "Outcome",
-      "values": [
-        {
-          "label": "Collected",
-          "value": "COLLECTED"
-        },
-        {
-          "label": "Failed (absent / not ready)",
-          "value": "FAILED"
-        }
-      ],
-      "type": "select",
-      "id": "Field_02",
-      "key": "pickupOutcome",
-      "validate": {
-        "required": true
-      },
-      "defaultValue": "COLLECTED"
-    },
-    {
-      "label": "Notes",
-      "type": "textarea",
-      "id": "Field_03",
-      "key": "pickupNotes"
-    }
-  ],
-  "type": "default",
-  "id": "collect-parcel",
-  "executionPlatform": "Camunda Cloud",
-  "executionPlatformVersion": "8.6.0",
-  "exporter": {
-    "name": "Camunda Modeler",
-    "version": "5.49.0"
-  },
-  "schemaVersion": 19
-}
-=======
 {
   "components": [
     {
@@ -101,4 +48,3 @@
   },
   "schemaVersion": 16
 }
->>>>>>> 4f09a061b5e60d01316f9e2be3d1689a1bbbfe0d
