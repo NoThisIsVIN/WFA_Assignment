@@ -52,7 +52,7 @@
   "type": "default",
   "id": "attempt-delivery",
   "executionPlatform": "Camunda Cloud",
-  "executionPlatformVersion": "8.6.0",
+  "executionPlatformVersion": "8.8.0",
   "exporter": {
     "name": "Camunda Modeler",
     "version": "5.28.0"
